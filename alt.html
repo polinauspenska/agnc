@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PROBLEMA — Alt hero</title>
+<meta name="description" content="PROBLEMA is a strategic marketing and brand intervention agency in Dubai, UAE.">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Schibsted+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F7D0;--ink:#2D120D;--mute:#7A5A4E;--acc:#6B0B0C;--pow:#CDE3E8;--line:#2D120D;--f:'Telegraf','Schibsted Grotesk',Helvetica,Arial,sans-serif;--b:'Inter',Helvetica,Arial,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*:before,*:after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.45 var(--b)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+.wrap{padding:0 clamp(16px,3vw,40px)}
+.lbl{text-transform:uppercase;letter-spacing:.1em;font-size:13px;color:var(--mute)}
+#pre{position:fixed;inset:0;background:#65031E;color:#F8F7D0;z-index:50;display:flex;align-items:flex-end;justify-content:flex-end;padding:24px;font:600 clamp(80px,22vw,300px)/.8 var(--f);transition:transform .8s cubic-bezier(.7,0,.2,1)}
+#pre.done{transform:translateY(-100%)}
+header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:calc(18px + env(safe-area-inset-top,0px)) clamp(16px,3vw,40px) 18px;mix-blend-mode:difference;color:#F8F7D0;text-transform:uppercase;letter-spacing:.08em;font-size:15px}
+.logo{font-weight:700;font-size:20px;letter-spacing:.12em}
+.mbtn{all:unset;cursor:pointer;font-weight:500}
+.mbtn:focus-visible{outline:3px solid #CDE3E8}
+#menu{position:fixed;inset:0;background:#6B0B0C;color:#F8F7D0;z-index:30;padding:calc(24px + env(safe-area-inset-top,0px)) clamp(16px,3vw,40px) 24px;display:flex;flex-direction:column;justify-content:space-between;transform:translateY(-100%);transition:transform .6s cubic-bezier(.7,0,.2,1);visibility:hidden}
+#menu.open{transform:none;visibility:visible}
+#menu .x{align-self:flex-end;text-transform:uppercase;letter-spacing:.08em}
+#menu nav a{display:block;font:600 clamp(40px,8.5vw,110px)/1 var(--f);letter-spacing:-.05em}
+#menu nav a:hover{font-style:italic;color:#CDE3E8}
+.hbg{background:#65031E;color:#F8F7D0}.hbg .tg{color:#CDE3E8}.hbg .meta{border-color:#F8F7D0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wm{display:block;background:url(assets/logo-wordmark.png) no-repeat left center/contain;aspect-ratio:900/200}
+.logo.wm{width:clamp(120px,14vw,170px)}
+.hero h1.full{width:min(100%,1050px);aspect-ratio:900/248;background:url(assets/logo-full.png) no-repeat left bottom/contain;margin:0 0 clamp(16px,2vw,28px);font-size:0;letter-spacing:0}
+footer b.wm{width:clamp(200px,28vw,340px);font-size:0}
+.hbg{position:relative;overflow:hidden}
+.hero{position:relative;padding-top:110px;justify-content:space-between;gap:40px}
+.hero>*{position:relative;z-index:1}
+.hero>.orb{position:absolute;z-index:0;right:-10vw;top:14vh;width:min(52vw,640px);aspect-ratio:1;border-radius:50%;border:1.5px solid rgba(248,247,208,.28)}
+.orb:before{content:"";position:absolute;inset:14%;border-radius:50%;border:1.5px solid rgba(248,247,208,.18)}
+.orb i{position:absolute;left:8%;top:18%;width:11%;aspect-ratio:1;border-radius:50%;background:#CDE3E8}
+.mid{margin-top:auto}
+.row2{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-top:12px}
+.ask .lbl{color:#CDE3E8;display:block;margin-bottom:6px}
+.rot{font:600 clamp(26px,4vw,60px)/1.05 var(--f);letter-spacing:-.045em;min-height:1.1em;border-bottom:2px solid #F8F7D0;padding-bottom:6px}
+.rot span{display:inline-block;transition:opacity .35s,transform .35s}
+.rot span.out{opacity:0;transform:translateY(.3em)}
+.cta2{display:inline-flex;align-items:center;gap:14px;background:#F8F7D0;color:#65031E;border-radius:99px;padding:18px 30px;font:600 clamp(18px,2vw,26px) var(--f);letter-spacing:-.03em;transition:background .2s,transform .2s}
+.cta2 b{font-weight:600;transition:transform .2s}
+.cta2:hover{background:#CDE3E8;color:#2D120D}.cta2:hover b{transform:translateX(5px)}
+.hbgimg{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(20,2,8,0) 38%,rgba(20,2,8,.5) 100%),linear-gradient(rgba(101,3,30,.08),rgba(101,3,30,.08)),url(assets/hero.jpg) center 60%/cover no-repeat;z-index:0}
+.hero{padding-right:calc(42% + 28px)}
+.hero h1.full{width:100%}
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:32px}
+.hero h1{font:600 clamp(56px,17.5vw,300px)/.82 var(--f);letter-spacing:-.07em;margin:0 0 .12em -.04em}
+.hero .tg{font:600 clamp(26px,4.4vw,64px)/1 var(--f);letter-spacing:-.045em;margin:0;color:var(--acc)}
+.meta{display:flex;justify-content:space-between;gap:24px;margin-top:36px;border-top:1px solid var(--line);padding-top:16px;flex-wrap:wrap}
+.meta span{text-transform:uppercase;letter-spacing:.1em;font-size:13px}
+section{padding:96px 0}
+.dark{background:#6B0B0C;color:#F8F7D0}
+.dark .lbl{color:#CDE3E8}
+.blue{background:#CDE3E8;color:#2D120D}.blue .lbl{color:#6B0B0C}
+.coffee{background:#2D120D;color:#F8F7D0}.coffee .lbl{color:#CDE3E8}
+.kR{background:#6B0B0C;color:#F8F7D0}.kB{background:#CDE3E8;color:#2D120D}.kL{background:#F8F7D0;color:#2D120D}.kC{background:#2D120D;color:#F8F7D0}
+h2{font:600 clamp(36px,6.2vw,104px)/.98 var(--f);letter-spacing:-.05em;margin:12px 0 48px;max-width:1300px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,80px)}
+.two p{margin:0 0 18px;font-size:clamp(18px,1.6vw,24px);max-width:560px}
+.cases div{border-top:1px solid currentColor;padding:14px 0;font:600 clamp(24px,3vw,44px)/1.05 var(--f);letter-spacing:-.04em}
+.end{font:600 clamp(32px,5vw,80px)/1 var(--f);letter-spacing:-.05em;margin-top:56px}
+.flow{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-top:40px;font:600 clamp(22px,3.4vw,52px)/1 var(--f);letter-spacing:-.04em}
+.flow i{font-style:normal;color:var(--acc)}
+.s{border-top:1px solid var(--line)}
+.s:last-child{border-bottom:1px solid var(--line)}
+.s button{all:unset;cursor:pointer;width:100%;box-sizing:border-box;display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:20px 0;font:600 clamp(32px,6.4vw,104px)/1 var(--f);letter-spacing:-.055em}
+.s button:focus-visible{outline:3px solid var(--acc)}
+.s button em{font:500 13px var(--f);letter-spacing:.1em;text-transform:uppercase;font-style:normal;color:var(--acc);white-space:nowrap}
+.s button:hover span{font-style:italic;color:var(--acc)}
+.pn{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s}
+.s.on .pn{grid-template-rows:1fr}
+.pn>div{overflow:hidden}
+.pn p{max-width:560px;margin:0 0 14px auto;font-size:22px;font-weight:500}
+.pn ul{list-style:none;margin:0 0 28px auto;padding:0;max-width:560px;display:flex;flex-wrap:wrap;gap:8px}
+.pn li{border:1.5px solid var(--line);border-radius:99px;padding:5px 14px;font-size:15px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.st{border-radius:8px;padding:20px;min-height:300px;display:flex;flex-direction:column;justify-content:space-between}
+.st b{font:600 clamp(28px,3vw,44px)/1 var(--f);letter-spacing:-.04em;display:block;margin-top:8px}
+.st p{margin:0;font-size:17px}
+.k1{background:#6B0B0C;color:#F8F7D0}.k2{background:#CDE3E8;color:#2D120D}.k3{background:#2D120D;color:#F8F7D0;outline:1px solid var(--line);outline-offset:-1px}.k4{background:#CDE3E8;color:#2D120D}
+.punch{margin-top:56px;font:600 clamp(24px,3.2vw,48px)/1.05 var(--f);letter-spacing:-.04em;max-width:900px}
+.who{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.w{border-radius:8px;padding:clamp(20px,3vw,36px);min-height:260px;display:flex;flex-direction:column;justify-content:space-between}
+.w b{font:600 clamp(28px,3.6vw,56px)/1 var(--f);letter-spacing:-.045em;display:block}
+.w p{margin:8px 0 0;font-size:20px;font-weight:500}
+.w small{font-size:14px;letter-spacing:.04em;text-transform:uppercase}
+.close h2{font-size:clamp(44px,10.5vw,190px);line-height:.88;letter-spacing:-.065em;margin-bottom:40px}
+.q{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 40px;padding:0;list-style:none}
+.q li{border:1.5px solid #F8F7D0;border-radius:99px;padding:8px 20px;font-size:clamp(16px,1.6vw,22px)}
+.close .big{font:600 clamp(24px,3.4vw,52px)/1.05 var(--f);letter-spacing:-.04em;margin:0 0 48px;max-width:800px}
+.mail{display:inline-block;background:#F8F7D0;color:#6B0B0C;border-radius:99px;padding:18px 34px;font:600 clamp(20px,2.4vw,32px) var(--f);letter-spacing:-.03em}
+.mail:hover{background:#CDE3E8;color:#2D120D}
+footer{background:#2D120D;color:#F8F7D0;padding:56px 0 32px}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-end}
+footer b{font:700 clamp(36px,6vw,80px)/1 var(--f);letter-spacing:-.05em;display:block}
+footer span{color:#CDE3E8}
+@media(max-width:820px){.two,.who{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}.pn p,.pn ul{margin-left:0}.s button em{display:none}}
+@media(max-width:480px){.steps{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+@media(max-width:820px){
+.heroimg{position:relative;width:auto;height:62svh;margin:0 calc(-1*clamp(16px,3vw,40px));background-position:center 58%}
+.hero{padding-right:0;min-height:auto;padding-top:28px;padding-bottom:28px}
+}
+header{mix-blend-mode:normal;color:#2D120D;gap:16px}
+.logo.wm{width:clamp(150px,15vw,190px);aspect-ratio:900/200;background-color:#65031E;background-origin:content-box;background-position:center;padding:11px 20px;border-radius:99px;box-shadow:0 4px 0 #2D120D}
+.pills{display:flex;gap:10px;margin-left:auto}
+.pills a,header .mbtn{background:#F8F7D0;color:#2D120D;border-radius:99px;padding:12px 22px;font:500 16px var(--b);letter-spacing:.04em;text-transform:uppercase;box-shadow:0 4px 0 #2D120D;white-space:nowrap;transition:transform .15s,box-shadow .15s}
+.pills a:hover,header .mbtn:hover{transform:translateY(2px);box-shadow:0 2px 0 #2D120D}
+.pills a.ct{background:#CDE3E8}
+header .mbtn{display:none}
+.hbg2{position:relative;min-height:100svh;overflow:hidden;background:#65031E;color:#F8F7D0;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px clamp(16px,3vw,40px) 72px}
+.hc{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}
+.hc h1{font:700 clamp(40px,9.6vw,176px)/.88 var(--f);letter-spacing:-.055em;text-transform:uppercase;margin:0;text-shadow:0 2px 6px rgba(30,4,10,.35),0 4px 50px rgba(30,4,10,.55)}
+.hl{display:block;position:relative}
+.hl small{position:absolute;left:100%;top:.3em;margin-left:.45em;font:500 clamp(14px,1.9vw,34px)/1 var(--f);letter-spacing:-.03em;white-space:nowrap;text-transform:uppercase}
+.hs{font:500 clamp(20px,3vw,46px)/1.05 var(--f);letter-spacing:-.04em;max-width:1000px;margin:clamp(28px,4vw,56px) 0 clamp(28px,3.4vw,44px);text-shadow:0 1px 4px rgba(30,4,10,.4),0 2px 28px rgba(30,4,10,.6)}
+.pill2{display:inline-block;background:#F8F7D0;color:#2D120D;border-radius:99px;padding:18px 40px;font:500 clamp(17px,1.5vw,22px) var(--b);letter-spacing:.03em;text-transform:uppercase;box-shadow:0 5px 0 #2D120D;transition:transform .15s,box-shadow .15s}
+.pill2:hover{transform:translateY(3px);box-shadow:0 2px 0 #2D120D;background:#CDE3E8}
+@media(max-width:820px){.pills{display:none}header .mbtn{display:inline-block;margin-left:auto}.hl small{position:static;display:block;margin:10px 0 0;font-size:16px}.hc h1{font-size:clamp(40px,13vw,90px)}}
+header{position:absolute;color:#F8F7D0}
+.logo.wm{background-color:transparent;box-shadow:none;padding:0;width:clamp(130px,11vw,170px)}
+.pills{gap:6px}
+.pills a,header .mbtn{padding:11px 24px;font:400 clamp(15px,1.25vw,19px) var(--b);letter-spacing:.02em;box-shadow:4px 5px 0 #140706}
+.pills a:hover,header .mbtn:hover{transform:translate(2px,2px);box-shadow:2px 3px 0 #140706}
+.pills a.ct{margin-left:26px}
+.hc h1{font:600 clamp(54px,12vw,230px)/.84 var(--f);letter-spacing:-.055em}
+.hl small{top:.38em;font:400 clamp(14px,2vw,36px)/1 var(--f);letter-spacing:-.02em}
+.hs{font:500 clamp(20px,3.1vw,50px)/1.02 var(--f);max-width:72vw;margin:clamp(24px,3.4vw,56px) 0 clamp(24px,3vw,40px)}
+.pill2{padding:18px 44px;font:400 clamp(16px,1.4vw,20px) var(--b);box-shadow:4px 5px 0 #140706}
+.pill2:hover{transform:translate(2px,2px);box-shadow:2px 3px 0 #140706}
+@media(max-width:820px){.hs{max-width:92vw}.hc h1{font-size:clamp(52px,19vw,120px)}}
+.pills{display:none!important}
+header .mbtn{display:inline-block;margin-left:auto;background:rgba(248,247,208,.08);color:#F8F7D0;border:1px solid rgba(248,247,208,.7);box-shadow:none;padding:10px 28px;font:500 13px var(--b);letter-spacing:.16em;text-transform:uppercase;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .25s,color .25s}
+header .mbtn:hover{background:#F8F7D0;color:#2D120D;transform:none;box-shadow:none}
+header{padding-top:calc(26px + env(safe-area-inset-top,0px))}
+.logo.wm{width:clamp(110px,9vw,140px)}
+.hc h1{font:500 clamp(34px,6.4vw,118px)/.94 var(--f);letter-spacing:-.05em}
+.hl small{top:.28em;margin-left:.6em;font:400 clamp(11px,1.15vw,19px)/1 var(--b);letter-spacing:.14em}
+.hs{font:400 clamp(15px,1.5vw,23px)/1.4 var(--b);letter-spacing:0;max-width:34em;margin:clamp(22px,2.6vw,38px) 0 clamp(26px,2.6vw,36px);opacity:.92}
+.pill2{padding:15px 38px;font:500 13px var(--b);letter-spacing:.16em;box-shadow:none;transition:background .25s,color .25s}
+.pill2:hover{transform:none;box-shadow:none;background:#CDE3E8}
+@media(max-width:820px){.hc h1{font-size:clamp(34px,10.5vw,64px)}.hs{max-width:30em;font-size:16px}.hl small{display:block;margin:12px 0 0;letter-spacing:.14em}}
+
+/* ===== Hero: liquid reveal (LN Hero Experience port) on velvet ===== */
+header .logo{display:none}
+header{padding:calc(36px + env(safe-area-inset-top,0px)) 40px 0;z-index:20}
+header .mbtn,header .mbtn:hover{background:none;border:0;padding:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;color:#F8F7D0;font:400 14px/1 var(--b);letter-spacing:0;text-transform:none;transform:none}
+header .mbtn:hover{opacity:.6}
+.vh{position:relative;height:100svh;min-height:520px;overflow:hidden;background:#4a0d12;color:#F8F7D0;isolation:isolate}
+.vh-gl,.vh-fallback{position:absolute;inset:0;width:100%;height:100%;display:block}
+.vh-fallback{background:url(assets/velvet-hd.jpg) center/cover;opacity:0;transition:opacity 1s}
+.vh.nogl .vh-fallback{opacity:1}
+.vh-gl{opacity:0;transition:opacity 1.4s ease}
+.vh.ready .vh-gl{opacity:1}
+.vh-logo,.vh-tag,.vh-scroll,.vh-bl,.vh-br{position:absolute;z-index:2;margin:0;opacity:0;transition:opacity 1.2s ease .2s}
+.vh.in .vh-logo,.vh.in .vh-tag,.vh.in .vh-bl,.vh.in .vh-br{opacity:1}
+.vh.in .vh-scroll{opacity:.6}
+.vh-logo{left:9.375vw;top:50%;transform:translateY(-50%);width:clamp(120px,12.5vw,180px);aspect-ratio:900/200;background:#F8F7D0;-webkit-mask:url(assets/logo-wordmark.png) left center/contain no-repeat;mask:url(assets/logo-wordmark.png) left center/contain no-repeat}
+.vh-tag{left:50%;top:50%;transform:translate(-50%,-50%);font:400 clamp(22px,1.95vw,30px)/1.2 'Instrument Serif',Georgia,serif;letter-spacing:-.01em;white-space:nowrap;text-align:center}
+.vh-tag em{font-style:italic}
+.vh-scroll{left:50%;bottom:28px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:14px;font:400 11px/1 var(--b);letter-spacing:.32em;text-transform:uppercase;padding-left:.32em}
+.vh-scroll i{position:relative;display:block;width:1px;height:64px;background:rgba(248,247,208,.18);overflow:hidden}
+.vh-scroll i:after{content:"";position:absolute;left:0;top:0;width:1px;height:100%;background:linear-gradient(to bottom,rgba(248,247,208,0),#F8F7D0 60%,#F8F7D0);transform:translateY(-100%);animation:vhdrip 2.6s cubic-bezier(.76,0,.24,1) infinite}
+@keyframes vhdrip{0%{transform:translateY(-100%)}55%{transform:translateY(0)}100%{transform:translateY(100%)}}
+.vh-scroll span{transition:letter-spacing .5s cubic-bezier(.2,.8,.2,1)}
+.vh-scroll:hover{opacity:1!important}.vh-scroll:hover span{letter-spacing:.42em}
+@media (prefers-reduced-motion:reduce){.vh-scroll i:after{animation:none;transform:none}}
+.burger{width:44px;height:44px;display:inline-flex!important;flex-direction:column;justify-content:center;align-items:flex-end;gap:6px;cursor:pointer}
+.burger i{display:block;height:1px;width:26px;background:#F8F7D0;transition:width .45s cubic-bezier(.2,.8,.2,1)}
+.burger i:nth-child(2){width:18px}.burger i:nth-child(3){width:22px}
+.burger:hover i{width:26px}.burger:hover i:nth-child(1){width:16px}
+header .mbtn.burger:hover{opacity:1}
+.vh-cta{left:40px;bottom:34px;display:flex;align-items:center;gap:16px;color:#F8F7D0;will-change:transform;transition:opacity 1.2s ease .2s,transform .5s cubic-bezier(.2,.8,.2,1)}
+.cta-ring{position:relative;width:56px;height:56px;border-radius:50%;border:1px solid rgba(248,247,208,.55);display:grid;place-items:center;flex:none;transition:border-color .4s}
+.cta-ring:before{content:"";position:absolute;inset:0;border-radius:50%;background:#F8F7D0;transform:scale(0);transition:transform .55s cubic-bezier(.2,.8,.2,1)}
+.cta-ring svg{position:relative;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .55s cubic-bezier(.2,.8,.2,1),color .3s}
+.cta-ring b{position:absolute;inset:-1px;border-radius:50%;animation:ctaorb 7s linear infinite}
+.cta-ring b:after{content:"";position:absolute;left:50%;top:-2.5px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:#CDE3E8}
+@keyframes ctaorb{to{transform:rotate(360deg)}}
+.cta-txt{position:relative;display:block;height:1.15em;overflow:hidden;font:400 clamp(20px,1.6vw,24px)/1.15 'Instrument Serif',Georgia,serif;letter-spacing:-.005em}
+.cta-txt>span{display:block;transition:transform .6s cubic-bezier(.7,0,.2,1)}
+.cta-txt>span+span{position:absolute;left:0;top:100%}
+.cta-txt em{font-style:italic}
+.vh-cta:after{content:"";position:absolute;left:72px;right:0;bottom:-6px;height:1px;background:currentColor;opacity:.5;transform:scaleX(0);transform-origin:right;transition:transform .6s cubic-bezier(.7,0,.2,1)}
+.vh-cta:hover:after,.vh-cta:focus-visible:after{transform:scaleX(1);transform-origin:left}
+.vh-cta:hover .cta-ring,.vh-cta:focus-visible .cta-ring{border-color:#F8F7D0}
+.vh-cta:hover .cta-ring:before,.vh-cta:focus-visible .cta-ring:before{transform:scale(1)}
+.vh-cta:hover .cta-ring svg,.vh-cta:focus-visible .cta-ring svg{color:#65031E;transform:rotate(45deg)}
+.vh-cta:hover .cta-txt>span,.vh-cta:focus-visible .cta-txt>span{transform:translateY(-100%)}
+.vh-cta:focus-visible{outline:none}
+.vh-cta:focus-visible .cta-ring{outline:2px solid #CDE3E8;outline-offset:4px}
+@media (prefers-reduced-motion:reduce){.cta-ring b{animation:none}}
+.vh-br{right:40px;bottom:40px;font:400 14px/1 var(--b)}
+@media(max-width:820px){
+ header{padding:calc(28px + env(safe-area-inset-top,0px)) 24px 0}
+ .vh-logo{left:24px;top:auto;bottom:calc(50% + 30px);transform:none;width:150px}
+ .vh-tag{left:24px;right:24px;transform:none;top:calc(50% - 14px);white-space:normal;text-align:left;font-size:clamp(26px,7.4vw,34px)}
+ .vh-scroll{left:auto;right:24px;bottom:24px;transform:none}.vh-scroll i{height:44px}
+ .vh-cta{left:24px;bottom:24px}.cta-ring{width:48px;height:48px}.vh-cta:after{left:64px}.vh-br{right:24px;bottom:28px}
+}
+/* ===== Sticky header: appears once the hero is scrolled past ===== */
+header{position:fixed;padding:calc(36px + env(safe-area-inset-top,0px)) 40px 0;transition:padding .6s cubic-bezier(.7,0,.2,1)}
+header:before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(80,8,20,.84);-webkit-backdrop-filter:blur(14px) saturate(1.15);backdrop-filter:blur(14px) saturate(1.15);border-bottom:1px solid rgba(248,247,208,.09);transform:translateY(-101%);transition:transform .6s cubic-bezier(.7,0,.2,1)}
+header.stuck{padding:calc(14px + env(safe-area-inset-top,0px)) 40px 14px}
+header.stuck:before{transform:none}
+header .logo.wm{display:block;width:clamp(108px,8.5vw,128px);aspect-ratio:900/200;padding:0;border-radius:0;box-shadow:none;background:#F8F7D0;-webkit-mask:url(assets/logo-wordmark.png) left center/contain no-repeat;mask:url(assets/logo-wordmark.png) left center/contain no-repeat;opacity:0;transform:translateY(-10px);pointer-events:none;transition:opacity .5s .15s,transform .6s cubic-bezier(.2,.8,.2,1) .15s}
+header.stuck .logo.wm{opacity:1;transform:none;pointer-events:auto}
+@media(max-width:820px){header{padding:calc(28px + env(safe-area-inset-top,0px)) 24px 0}header.stuck{padding:calc(10px + env(safe-area-inset-top,0px)) 24px 10px}}
+@media (prefers-reduced-motion:reduce){header,header:before,header .logo.wm{transition:none}}
+/* ===== Logo flight: hero logo travels into the header on scroll ===== */
+header .logo.wm,header.stuck .logo.wm{opacity:0!important;pointer-events:none!important}
+.fly-logo{position:fixed;left:0;top:0;z-index:25;display:block;aspect-ratio:900/200;background:#F8F7D0;-webkit-mask:url(assets/logo-wordmark.png) left center/contain no-repeat;mask:url(assets/logo-wordmark.png) left center/contain no-repeat;transform-origin:0 0;will-change:transform;opacity:0;transition:opacity 1.2s ease .2s}
+.fly-logo.on{opacity:1}
+.vh-logo.flown{visibility:hidden}
+/* ===== ALT: big signature headline ===== */
+header .logo.wm,header.stuck .logo.wm{opacity:1!important;transform:none!important;pointer-events:auto!important}
+.va-block{position:absolute;z-index:2;left:40px;right:40px;bottom:36px}
+.vh-alt .va-eyebrow{margin:0 0 clamp(18px,2vw,30px) .3em;font:400 12px/1.4 var(--b);letter-spacing:.28em;text-transform:uppercase;opacity:0;transition:opacity 1.2s ease .5s}
+.vh-alt.in .va-eyebrow{opacity:.75}
+.va-title{margin:0;font:600 clamp(64px,12.4vw,250px)/.86 'Telegraf','Schibsted Grotesk',Helvetica,Arial,sans-serif;letter-spacing:-.065em;color:#F8F7D0}
+.va-ln{display:block;overflow:hidden;padding:.02em 0 .06em;margin-bottom:-.08em}
+.va-ln>span{display:inline-block;transform:translateY(105%);transition:transform 1.3s cubic-bezier(.16,1,.3,1)}
+.va-ln+.va-ln>span{transition-delay:.12s}
+.vh-alt.in .va-ln>span{transform:none}
+.va-title em{font:italic 400 1.1em/1 'Instrument Serif',Georgia,serif;letter-spacing:-.025em;padding-right:.04em}
+.vh-alt .vh-cta{left:auto;right:40px;bottom:52px}
+.vh-alt .vh-cta:after{left:72px}
+.vh-alt .vh-scroll{left:auto;right:46px;top:50%;bottom:auto;transform:translateY(-50%)}
+@media(max-width:820px){
+ .va-block{left:24px;right:24px;bottom:120px}
+ .va-title{font-size:clamp(46px,13.6vw,96px)}
+ .vh-alt .va-eyebrow{font-size:10px;letter-spacing:.22em;margin-left:.2em}
+ .vh-alt .vh-cta{right:auto;left:24px;bottom:28px}
+ .vh-alt .vh-scroll{right:24px;top:auto;bottom:28px;transform:none}
+}
+@media (prefers-reduced-motion:reduce){.va-ln>span{transition:none;transform:none}}
+</style></head>
+<body>
+<div id="pre" aria-hidden="true"><span id="pct">0</span>%</div>
+<header><a class="logo wm" href="#top" aria-label="PROBLEMA home"></a><nav class="pills" aria-label="Main"><a href="#solve">Services</a><a href="#method">Method</a><a href="#who">Who we work with</a><a class="ct" href="#contact">Contact</a></nav><button class="mbtn burger" id="mo" aria-expanded="false" aria-controls="menu" aria-label="Open menu"><i></i><i></i><i></i></button></header>
+<div id="menu" aria-label="Menu">
+  <button class="mbtn x" id="mc">Close</button>
+  <nav><a href="#why">Why Problema</a><a href="#what">What we do</a><a href="#solve">What we solve</a><a href="#method">Method</a><a href="#who">Who we work with</a><a href="#contact">Contact</a></nav>
+  <div class="lbl" style="color:#CDE3E8">Dubai, UAE</div>
+</div>
+
+<main id="top">
+<section class="vh vh-alt" id="hero" aria-label="Introduction">
+  <canvas class="vh-gl" aria-hidden="true"></canvas>
+  <div class="vh-fallback" aria-hidden="true"></div>
+  <div class="va-block">
+  <p class="va-eyebrow">Strategic marketing &amp; brand intervention agency</p>
+  <h1 class="va-title"><span class="sr">PROBLEMA. Every business has one.</span>
+    <span class="va-ln" aria-hidden="true"><span>Every business</span></span>
+    <span class="va-ln" aria-hidden="true"><span>has <em>one.</em></span></span>
+  </h1>
+  </div>
+  <a class="vh-scroll" href="#why" aria-label="Scroll down"><span>Scroll</span><i aria-hidden="true"></i></a>
+  <a class="vh-bl vh-cta" href="#contact" aria-label="Solve your problem">
+    <span class="cta-ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg><b></b></span>
+    <span class="cta-txt" aria-hidden="true"><span>Solve your <em>problem</em></span><span>Solve your <em>problem</em></span></span>
+  </a>
+</section>
+
+<section class="coffee" id="why"><div class="wrap">
+  <div class="lbl">Why Problema?</div>
+  <h2>“Problema” is the word for “problem” in many languages.</h2>
+  <div class="two">
+    <div>
+      <p>But a problem is not always a crisis.</p>
+      <p>It can be a challenge, a weak spot, a missed opportunity, or simply the gap between where your business is and where it wants to be.</p>
+    </div>
+    <div class="cases">
+      <div>A startup ready to launch.</div><div>A company that has stopped growing.</div><div>A business entering a new market.</div><div>A brand losing relevance.</div><div>A reputation under pressure.</div>
+    </div>
+  </div>
+  <p class="end">Different businesses. Different problems.<br>We find yours, then we solve it.</p>
+</div></section>
+
+<section class="blue" id="what"><div class="wrap">
+  <div class="lbl">What we do</div>
+  <h2>We don't start with services. We start with your problem.</h2>
+  <div class="two">
+    <p>PROBLEMA works with startups, growing companies and established businesses to uncover what is holding them back, then builds the strategy to move them forward.</p>
+    <p>We bring business thinking, marketing, brand, communication and creative execution together to solve real commercial challenges.</p>
+  </div>
+  <div class="flow"><span>Diagnose</span><i>→</i><span>Define</span><i>→</i><span>Solve</span><i>→</i><span>Grow</span></div>
+</div></section>
+
+<section id="solve"><div class="wrap">
+  <div class="lbl" style="margin-bottom:16px">What we solve</div>
+  <div class="s on"><button aria-expanded="true"><span>Brand &amp; Positioning</span><em>Open</em></button><div class="pn"><div>
+    <p>When your business needs a sharper, clearer direction.</p><ul><li>Brand strategy</li><li>Positioning</li><li>Value proposition</li><li>Customer definition</li><li>Messaging</li><li>Repositioning</li></ul></div></div></div>
+  <div class="s"><button aria-expanded="false"><span>Go-to-Market &amp; Launch</span><em>Open</em></button><div class="pn"><div>
+    <p>When you're launching a business or product, or entering a new market.</p><ul><li>Market research</li><li>GTM strategy</li><li>Market entry</li><li>Launch strategy</li><li>Customer acquisition</li></ul></div></div></div>
+  <div class="s"><button aria-expanded="false"><span>Marketing &amp; Growth</span><em>Open</em></button><div class="pn"><div>
+    <p>When you need more customers and stronger results.</p><ul><li>Marketing strategy</li><li>Digital &amp; performance marketing</li><li>Campaigns</li><li>Conversion</li><li>CRM</li><li>Retention</li></ul></div></div></div>
+  <div class="s"><button aria-expanded="false"><span>Business &amp; Marketing Turnaround</span><em>Open</em></button><div class="pn"><div>
+    <p>When something isn't working and you need to know why.</p><ul><li>Business &amp; marketing audits</li><li>Performance analysis</li><li>Customer journey</li><li>Marketing restructuring</li><li>Recovery plans</li></ul></div></div></div>
+  <div class="s"><button aria-expanded="false"><span>Reputation &amp; Crisis</span><em>Open</em></button><div class="pn"><div>
+    <p>When your reputation or business is under pressure.</p><ul><li>Crisis communication</li><li>Reputation management</li><li>PR</li><li>Public response</li><li>Crisis recovery</li><li>Preparedness</li></ul></div></div></div>
+  <div class="s"><button aria-expanded="false"><span>Communication &amp; Visibility</span><em>Open</em></button><div class="pn"><div>
+    <p>When your business is strong but the market isn't noticing.</p><ul><li>PR</li><li>Communication strategy</li><li>Content</li><li>Thought leadership</li><li>Founder positioning</li><li>Partnerships</li></ul></div></div></div>
+</div></section>
+
+<section class="coffee" id="method"><div class="wrap">
+  <div class="lbl">The Problema Method</div>
+  <h2>Every solution starts with a diagnosis.</h2>
+  <div class="steps">
+    <div class="st kR"><span class="lbl" style="color:#CDE3E8">01</span><div><b>Diagnose</b><p>Get to know your business, market, customers and the challenge in front of you.</p></div></div>
+    <div class="st kB"><span class="lbl" style="color:#6B0B0C">02</span><div><b>Define</b><p>Pinpoint the real problem and the biggest opportunities.</p></div></div>
+    <div class="st kL"><span class="lbl" style="color:#6B0B0C">03</span><div><b>Solve</b><p>Build the right strategy and execute it.</p></div></div>
+    <div class="st kR"><span class="lbl" style="color:#CDE3E8">04</span><div><b>Grow</b><p>Measure, optimize and turn the solution into lasting growth.</p></div></div>
+  </div>
+  <p class="punch">No unnecessary services. No one-size-fits-all packages. Only the right solution for the right problem.</p>
+</div></section>
+
+<section class="blue" id="who"><div class="wrap">
+  <div class="lbl" style="margin-bottom:16px">Who we work with</div>
+  <div class="who">
+    <div class="w kR"><div><b>Startups</b><p>From idea to market.</p></div><small>Positioning · GTM · Launch · Customer acquisition</small></div>
+    <div class="w kL"><div><b>Growing businesses</b><p>From traction to scale.</p></div><small>Growth · Marketing · Conversion · Expansion</small></div>
+    <div class="w kC"><div><b>Established businesses</b><p>From stagnation to renewed relevance.</p></div><small>Repositioning · Transformation · Relaunch</small></div>
+    <div class="w kR"><div><b>Businesses in crisis</b><p>From reaction to recovery.</p></div><small>Crisis strategy · Communication · Reputation recovery</small></div>
+  </div>
+  <p class="punch">Industry-agnostic. Problem-focused.</p>
+</div></section>
+
+<section class="dark close" id="contact"><div class="wrap">
+  <h2>What's your Problema?</h2>
+  <ul class="q"><li>Launching something new?</li><li>Growth stalled?</li><li>Marketing not delivering?</li><li>Entering a new market?</li><li>Losing relevance?</li><li>Facing a reputation challenge?</li></ul>
+  <p class="big">Whatever the problem, that's where we start.</p>
+  <a class="mail" href="mailto:hello@problema.ae?subject=My%20Problema">hello@problema.ae</a>
+</div></section>
+</main>
+
+<footer><div class="wrap"><div><b class="wm" role="img" aria-label="PROBLEMA"></b><span>Every business has one.</span></div><span>Dubai, UAE</span></div></footer>
+
+<script>
+(function(){
+var p=document.getElementById('pct'),n=0,t=setInterval(function(){n+=Math.ceil(Math.random()*9);if(n>=100){n=100;clearInterval(t);setTimeout(function(){document.getElementById('pre').classList.add('done')},250)}p.textContent=n},60);
+var m=document.getElementById('menu'),o=document.getElementById('mo');
+function tog(v){m.classList.toggle('open',v);o.setAttribute('aria-expanded',v)}
+o.onclick=function(){tog(true)};document.getElementById('mc').onclick=function(){tog(false)};
+m.querySelectorAll('nav a').forEach(function(a){a.onclick=function(){tog(false)}});
+document.querySelectorAll('.s').forEach(function(s){s.querySelector('button').onclick=function(){
+var was=s.classList.contains('on');
+document.querySelectorAll('.s').forEach(function(x){x.classList.remove('on');x.querySelector('button').setAttribute('aria-expanded','false')});
+if(!was){s.classList.add('on');this.setAttribute('aria-expanded','true')}}});
+})();
+</script>
+<script>
+/* Hero liquid reveal — ported from the LN Hero Experience plugin (approved-flow.js 4.4.22–24
+   + hover-webgl.js). Same metaball wake, same autonomous path, same pointer wake and timings.
+   The flat fills of the original are replaced by the velvet: the liquid shape reveals the
+   floral relief lifted and lit, with a slightly deeper core. */
+(function(){
+'use strict';
+var hero=document.getElementById('hero');if(!hero)return;
+var cv=hero.querySelector('.vh-gl');
+var motion=matchMedia('(prefers-reduced-motion: reduce)');
+var pre=document.getElementById('pre');
+(function wait(){if(!pre||pre.classList.contains('done'))setTimeout(function(){hero.classList.add('in')},300);else setTimeout(wait,80)})();
+
+var VS='attribute vec2 p;varying vec2 uv;void main(){uv=p*.5+.5;gl_Position=vec4(p,0.,1.);}';
+var FS=[
+'precision highp float;',
+'varying vec2 uv;uniform sampler2D T;uniform vec2 R,I,D;uniform float time,energy,intro;uniform vec4 wake[8];',
+'float contribution(vec2 pos,vec2 point,float index,float size,float strength){',
+'  float u=index/8.;float radius=96.*size*(1.-u*.46);',
+'  vec2 delta=(pos-point)/vec2(radius*1.16,radius);',
+'  return exp(-dot(delta,delta)*1.48)*(strength*pow(1.-u*.72,1.22));}',
+'vec2 cover(vec2 u){float sr=R.x/R.y,ir=I.x/I.y;vec2 s=sr>ir?vec2(1.,ir/sr):vec2(sr/ir,1.);return (u-.5)*s+.5;}',
+'float lum(vec2 t){return dot(texture2D(T,t).rgb,vec3(.299,.587,.114));}',
+'void main(){',
+'  vec2 p=vec2(uv.x,1.-uv.y)*D;',
+'  vec2 warped=vec2(',
+'    p.x+22.*sin(p.y*.026+time*.45)+12.*sin(p.x*.019-p.y*.018-time*.56),',
+'    p.y+24.*sin(p.x*.023-time*.43)+12.*cos(p.y*.022+p.x*.011+time*.3));',
+'  float field=0.;',
+'  for(int i=0;i<8;i++){',
+'    field+=contribution(warped,wake[i].xy,float(i),.98,.34);',
+'    field+=contribution(warped,wake[i].zw,float(i),1.42,.39);}',
+'  float innerField=field+.045*sin(p.x*.014-p.y*.011+time*.45);',
+'  float outerAA=.002,innerAA=.003;',
+'  #ifdef LN_DERIVATIVES',
+'    outerAA=max(fwidth(field)*.6,.0001);innerAA=max(fwidth(innerField)*.6,.0001);',
+'  #endif',
+'  float edge=smoothstep(.2175-outerAA,.2175+outerAA,field);',
+'  float inner=smoothstep(.72-innerAA,.72+innerAA,innerField);',
+'  vec2 tu=cover(uv);',
+'  vec3 base=texture2D(T,tu).rgb*.86;',
+   // liquid refraction: the revealed velvet is shifted by the same warp that shapes the wake
+'  vec2 off=(warped-p)/D*vec2(.28,-.28);',
+'  off*=smoothstep(0.,.1,uv.x)*smoothstep(1.,.9,uv.x)*smoothstep(0.,.1,uv.y)*smoothstep(1.,.9,uv.y);',
+'  vec2 tr=cover(uv+off*edge);',
+'  vec3 rev=texture2D(T,tr).rgb;',
+'  vec2 px=1.8/I;',
+'  float em=(lum(tr-px)-lum(tr+px))+(lum(tr+vec2(-px.x,px.y))-lum(tr+vec2(px.x,-px.y)));',
+'  vec3 body=rev*1.42+vec3(1.,.62,.56)*clamp(em,-.2,.4)*1.25;',
+'  vec3 core=body*.84;',
+'  vec3 fill=mix(body,core,inner);',
+'  vec3 c=mix(base,fill,clamp(edge*energy,0.,1.));',
+'  float vg=smoothstep(1.35,.35,length((uv-.5)*vec2(R.x/R.y,1.)*.8));c*=mix(.78,1.,vg);',
+'  gl_FragColor=vec4(c*intro,1.);}'
+].join('\n');
+
+var gl=cv.getContext('webgl',{alpha:false,antialias:false,powerPreference:'high-performance'});
+if(!gl){hero.classList.add('nogl');return}
+function compile(t,s){var o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS)){console.warn(gl.getShaderInfoLog(o));return null}return o}
+var der=gl.getExtension('OES_standard_derivatives');
+var vs=compile(gl.VERTEX_SHADER,VS),fs=compile(gl.FRAGMENT_SHADER,(der?'#extension GL_OES_standard_derivatives : enable\n#define LN_DERIVATIVES\n':'')+FS);
+if(!vs||!fs){hero.classList.add('nogl');return}
+var prog=gl.createProgram();gl.attachShader(prog,vs);gl.attachShader(prog,fs);gl.linkProgram(prog);
+if(!gl.getProgramParameter(prog,gl.LINK_STATUS)){hero.classList.add('nogl');return}
+gl.useProgram(prog);
+var buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+var at=gl.getAttribLocation(prog,'p');gl.enableVertexAttribArray(at);gl.vertexAttribPointer(at,2,gl.FLOAT,false,0,0);
+var U={};['T','R','I','D','time','energy','intro','wake[0]'].forEach(function(n){U[n]=gl.getUniformLocation(prog,n)});
+
+var width=0,height=0,ready=false,port=false,DW=960,DH=540;
+function resize(){
+  width=hero.clientWidth;height=hero.clientHeight;
+  var wr=Math.min(devicePixelRatio||1,1.5);
+  cv.width=Math.max(1,Math.round(width*wr));cv.height=Math.max(1,Math.round(height*wr));
+  gl.viewport(0,0,cv.width,cv.height);gl.uniform2f(U.R,cv.width,cv.height);
+  port=height>width;DW=port?540:960;DH=port?960:540;gl.uniform2f(U.D,DW,DH);
+}
+var img=new Image();
+img.onload=function(){
+  var t=gl.createTexture();gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,t);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,img);gl.uniform1i(U.T,0);gl.uniform2f(U.I,img.width,img.height);
+  ready=true;hero.classList.add('ready');sync();
+};
+img.onerror=function(){hero.classList.add('nogl')};
+img.src='assets/velvet-hd.jpg';
+
+var frame=0,last=0,time=0,energy=0,intro=0,inView=true,active=false;
+var x=480,y=270,hoverX=480,hoverY=270;
+// two independent wakes: the first is always automatic, the second follows the pointer
+var autoWake=new Float32Array(16),hoverWake=new Float32Array(16),wake=new Float32Array(32);
+for(var i=0;i<8;i++){autoWake[i*2]=480;autoWake[i*2+1]=270;hoverWake[i*2]=-1200;hoverWake[i*2+1]=-1200}
+function sampleChain(chain,px,py,dt,headLag){
+  chain[0]+=(px-chain[0])*(1-Math.exp(-dt/headLag));chain[1]+=(py-chain[1])*(1-Math.exp(-dt/headLag));
+  for(var i=1;i<8;i++){var lag=active?(28+i*4.5):(48+i*7),a=1-Math.exp(-dt/lag);
+    chain[i*2]+=(chain[(i-1)*2]-chain[i*2])*a;chain[i*2+1]+=(chain[(i-1)*2+1]-chain[i*2+1])*a}
+}
+function packWake(){wake.set(autoWake,0);wake.set(hoverWake,16)}
+hero.addEventListener('pointermove',function(e){
+  if(e.pointerType!=='mouse')return;
+  var r=hero.getBoundingClientRect();hoverX=(e.clientX-r.left)/r.width*DW;hoverY=(e.clientY-r.top)/r.height*DH;
+  if(!active){for(var i=0;i<8;i++){hoverWake[i*2]=hoverX;hoverWake[i*2+1]=hoverY}}
+  active=true;
+},{passive:true});
+hero.addEventListener('pointerleave',function(){active=false},{passive:true});
+packWake();
+
+function paint(){
+  if(!ready)return;
+  gl.uniform1f(U.time,time);gl.uniform1f(U.energy,energy);gl.uniform1f(U.intro,1-Math.pow(1-intro,3));
+  gl.uniform4fv(U['wake[0]'],wake);gl.drawArrays(gl.TRIANGLES,0,6);
+}
+function tick(now){
+  frame=0;if(document.hidden||!inView||motion.matches){last=0;return}
+  var dt=last?Math.min(50,now-last):16.667;last=now;time+=dt/1000;intro=Math.min(1,intro+dt/1400);
+  var ax=480+325*Math.sin(time*.90)+48*Math.sin(time*1.60);
+  var ay=270+150*Math.sin(time*1.10)+28*Math.cos(time*1.85);
+  var autoX=port?ay:ax,autoY=port?ax:ay;   // portrait: same path, axes swapped
+  var tx=active?hoverX:autoX,ty=active?hoverY:autoY;
+  var follow=1-Math.exp(-dt/(active?46:82));x+=(tx-x)*follow;y+=(ty-y)*follow;
+  sampleChain(autoWake,autoX,autoY,dt,36);
+  if(active)sampleChain(hoverWake,hoverX,hoverY,dt,18);else sampleChain(hoverWake,-1200,-1200,dt,70);
+  packWake();
+  var desired=active?1.08:.72;
+  energy+=(desired-energy)*(1-Math.exp(-dt/(desired>energy?82:420)));
+  paint();frame=requestAnimationFrame(tick);
+}
+function sync(){
+  if(frame)cancelAnimationFrame(frame);frame=0;last=0;
+  if(document.hidden||!inView)return;
+  if(motion.matches){energy=.72;intro=1}
+  paint();if(!motion.matches)frame=requestAnimationFrame(tick);
+}
+resize();
+new ResizeObserver(function(){resize();paint()}).observe(hero);
+new IntersectionObserver(function(en){inView=en[0].isIntersecting;sync()}).observe(hero);
+document.addEventListener('visibilitychange',sync);
+})();
+</script>
+<script>
+/* CTA: gentle magnetic pull toward the cursor */
+(function(){var c=document.querySelector('.vh-cta');if(!c||matchMedia('(hover: none),(prefers-reduced-motion: reduce)').matches)return;
+c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();var x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);c.style.transform='translate('+x*.18+'px,'+y*.3+'px)'});
+c.addEventListener('pointerleave',function(){c.style.transform=''});})();
+</script>
+<script>
+/* Sticky header bar once the hero has scrolled away (logo stays top-left throughout) */
+(function(){var h=document.querySelector('header'),hero=document.getElementById('hero');if(!h||!hero)return;
+var on=false;function c(){var v=scrollY>hero.offsetHeight*.42;if(v!==on){on=v;h.classList.toggle('stuck',v)}}
+addEventListener('scroll',c,{passive:true});addEventListener('resize',c);c();})();
+</script>
+</body></html>
