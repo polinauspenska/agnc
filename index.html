@@ -147,8 +147,6 @@ header{padding-top:calc(26px + env(safe-area-inset-top,0px))}
 @media(max-width:820px){.hc h1{font-size:clamp(34px,10.5vw,64px)}.hs{max-width:30em;font-size:16px}.hl small{display:block;margin:12px 0 0;letter-spacing:.14em}}
 
 /* ===== Hero: liquid reveal (LN Hero Experience port) on velvet ===== */
-.vh-lines{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;pointer-events:none;opacity:0;transition:opacity 1.4s}
-.vh.ready .vh-lines{opacity:1}
 header .logo{display:none}
 header{padding:calc(36px + env(safe-area-inset-top,0px)) 40px 0;z-index:20}
 header .mbtn,header .mbtn:hover{background:none;border:0;padding:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;color:#F8F7D0;font:400 14px/1 var(--b);letter-spacing:0;text-transform:none;transform:none}
@@ -289,7 +287,7 @@ if(!was){s.classList.add('on');this.setAttribute('aria-expanded','true')}}});
 /* Hero liquid reveal — ported from the LN Hero Experience plugin (approved-flow.js 4.4.22–24
    + hover-webgl.js). Same metaball wake, same autonomous path, same pointer wake and timings.
    The flat fills of the original are replaced by the velvet: the liquid shape reveals the
-   floral relief lifted and lit, with a slightly deeper core; contour rings bend near the cursor. */
+   floral relief lifted and lit, with a slightly deeper core. */
 (function(){
 'use strict';
 var hero=document.getElementById('hero');if(!hero)return;
@@ -298,7 +296,6 @@ var motion=matchMedia('(prefers-reduced-motion: reduce)');
 var pre=document.getElementById('pre');
 (function wait(){if(!pre||pre.classList.contains('done'))setTimeout(function(){hero.classList.add('in')},300);else setTimeout(wait,80)})();
 
-var groups=[[-110,-20,395,280],[665,-90,405,330],[560,650,495,335]];
 var VS='attribute vec2 p;varying vec2 uv;void main(){uv=p*.5+.5;gl_Position=vec4(p,0.,1.);}';
 var FS=[
 'precision highp float;',
@@ -354,16 +351,12 @@ var buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.AR
 var at=gl.getAttribLocation(prog,'p');gl.enableVertexAttribArray(at);gl.vertexAttribPointer(at,2,gl.FLOAT,false,0,0);
 var U={};['T','R','I','D','time','energy','intro','wake[0]'].forEach(function(n){U[n]=gl.getUniformLocation(prog,n)});
 
-// contour rings (2D canvas over the WebGL layer, as in the plugin)
-var lines=document.createElement('canvas');lines.className='vh-lines';lines.setAttribute('aria-hidden','true');cv.after(lines);
-var ctx=lines.getContext('2d');
 var width=0,height=0,ready=false,port=false,DW=960,DH=540;
 function resize(){
   width=hero.clientWidth;height=hero.clientHeight;
-  var wr=Math.min(devicePixelRatio||1,1.5),lr=Math.min(devicePixelRatio||1,1.35);
+  var wr=Math.min(devicePixelRatio||1,1.5);
   cv.width=Math.max(1,Math.round(width*wr));cv.height=Math.max(1,Math.round(height*wr));
-  lines.width=Math.max(1,Math.round(width*lr));lines.height=Math.max(1,Math.round(height*lr));
-  ctx.setTransform(lr,0,0,lr,0,0);gl.viewport(0,0,cv.width,cv.height);gl.uniform2f(U.R,cv.width,cv.height);
+  gl.viewport(0,0,cv.width,cv.height);gl.uniform2f(U.R,cv.width,cv.height);
   port=height>width;DW=port?540:960;DH=port?960:540;gl.uniform2f(U.D,DW,DH);
 }
 var img=new Image();
@@ -397,22 +390,10 @@ hero.addEventListener('pointermove',function(e){
 hero.addEventListener('pointerleave',function(){active=false},{passive:true});
 packWake();
 
-function drawLines(){
-  ctx.clearRect(0,0,width,height);ctx.lineWidth=.8;ctx.strokeStyle='rgba(248,247,208,.11)';
-  groups.forEach(function(g,j){var cx=port?g[1]:g[0],cy=port?g[0]:g[1],rx=port?g[3]:g[2],ry=port?g[2]:g[3];
-    for(var ring=0;ring<3;ring++){var radius=.61+ring*.31;ctx.beginPath();
-      for(var step=0;step<=240;step++){var a=step/240*Math.PI*2;
-        var w=1+.11*Math.sin(a*3+time*.52+j)+.055*Math.cos(a*5-time*.56);
-        var px=cx+rx*radius*w*Math.cos(a),py=cy+ry*radius*w*Math.sin(a);
-        var dist=Math.hypot(px-x,py-y),pull=Math.exp(-Math.pow(dist/145,2))*energy;
-        px+=pull*14*Math.sin(py*.012-time*2.35);py+=pull*14*Math.cos(px*.013+time*2.10);
-        if(step===0)ctx.moveTo(px*width/DW,py*height/DH);else ctx.lineTo(px*width/DW,py*height/DH)}
-      ctx.closePath();ctx.stroke()}});
-}
 function paint(){
   if(!ready)return;
   gl.uniform1f(U.time,time);gl.uniform1f(U.energy,energy);gl.uniform1f(U.intro,1-Math.pow(1-intro,3));
-  gl.uniform4fv(U['wake[0]'],wake);gl.drawArrays(gl.TRIANGLES,0,6);drawLines();
+  gl.uniform4fv(U['wake[0]'],wake);gl.drawArrays(gl.TRIANGLES,0,6);
 }
 function tick(now){
   frame=0;if(document.hidden||!inView||motion.matches){last=0;return}
