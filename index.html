@@ -212,6 +212,11 @@ header .logo.wm{display:block;width:clamp(108px,8.5vw,128px);aspect-ratio:900/20
 header.stuck .logo.wm{opacity:1;transform:none;pointer-events:auto}
 @media(max-width:820px){header{padding:calc(28px + env(safe-area-inset-top,0px)) 24px 0}header.stuck{padding:calc(10px + env(safe-area-inset-top,0px)) 24px 10px}}
 @media (prefers-reduced-motion:reduce){header,header:before,header .logo.wm{transition:none}}
+/* ===== Logo flight: hero logo travels into the header on scroll ===== */
+header .logo.wm,header.stuck .logo.wm{opacity:0!important;pointer-events:none!important}
+.fly-logo{position:fixed;left:0;top:0;z-index:25;display:block;aspect-ratio:900/200;background:#F8F7D0;-webkit-mask:url(assets/logo-wordmark.png) left center/contain no-repeat;mask:url(assets/logo-wordmark.png) left center/contain no-repeat;transform-origin:0 0;will-change:transform;opacity:0;transition:opacity 1.2s ease .2s}
+.fly-logo.on{opacity:1}
+.vh-logo.flown{visibility:hidden}
 </style></head>
 <body>
 <div id="pre" aria-hidden="true"><span id="pct">0</span>%</div>
@@ -469,9 +474,41 @@ c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();var
 c.addEventListener('pointerleave',function(){c.style.transform=''});})();
 </script>
 <script>
-/* Sticky header: logo + burger bar once the hero has scrolled away */
-(function(){var h=document.querySelector('header'),hero=document.getElementById('hero');if(!h||!hero)return;
-var on=false;function check(){var v=window.scrollY>hero.offsetHeight-90;if(v!==on){on=v;h.classList.toggle('stuck',v)}}
-addEventListener('scroll',check,{passive:true});addEventListener('resize',check);check();})();
+/* Sticky header + logo flight. The hero logo leaves the hero as you start scrolling and
+   glides (shrinking) into the header's left slot; the bar slides in as it lands. */
+(function(){
+var h=document.querySelector('header'),hero=document.getElementById('hero'),src=hero&&hero.querySelector('.vh-logo');
+if(!h||!hero||!src)return;
+var fly=document.createElement('a');fly.className='fly-logo';fly.href='#top';fly.setAttribute('aria-label','PROBLEMA home');document.body.appendChild(fly);
+var start={},endW=128,endX=40,endY=36,dist=1,stuck=false,raf=0;
+function measure(){
+  fly.style.transform='none';
+  var r=src.getBoundingClientRect();
+  start={x:r.left,y:r.top+window.scrollY,w:r.width,h:r.height};
+  fly.style.width=r.width+'px';
+  var mob=innerWidth<=820;
+  endW=Math.max(108,Math.min(128,innerWidth*.085));if(mob)endW=108;
+  endX=mob?24:40;
+  var endC=(mob?10:14)+22;            // stuck header: padding + half burger height
+  endY=endC-(endW*200/900)/2;
+  dist=Math.max(1,hero.offsetHeight*.42);
+}
+function ease(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2}
+function frame(){
+  raf=0;var y=window.scrollY,p=Math.min(1,Math.max(0,y/dist)),e=ease(p);
+  var natY=start.y-y;
+  var x=start.x+(endX-start.x)*e,ty=natY+(endY-natY)*e,sc=1+(endW/start.w-1)*e;
+  fly.style.transform='translate3d('+x.toFixed(2)+'px,'+ty.toFixed(2)+'px,0) scale('+sc.toFixed(4)+')';
+  var v=p>=.92;if(v!==stuck){stuck=v;h.classList.toggle('stuck',v)}
+}
+function req(){if(!raf)raf=requestAnimationFrame(frame)}
+function init(){measure();src.classList.add('flown');frame()}
+addEventListener('scroll',req,{passive:true});
+addEventListener('resize',function(){src.classList.remove('flown');init()});
+// reveal together with the rest of the hero copy
+new MutationObserver(function(){if(hero.classList.contains('in'))fly.classList.add('on')}).observe(hero,{attributes:true,attributeFilter:['class']});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(init);
+init();
+})();
 </script>
 </body></html>
