@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PROBLEMA — Every business has one</title>
+<meta name="description" content="PROBLEMA is a strategic marketing and brand intervention agency in Dubai, UAE.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Schibsted+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F7D0;--ink:#2D120D;--mute:#7A5A4E;--acc:#6B0B0C;--pow:#CDE3E8;--line:#2D120D;--f:'Telegraf','Schibsted Grotesk',Helvetica,Arial,sans-serif;--b:'Inter',Helvetica,Arial,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*:before,*:after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.45 var(--b)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+.wrap{padding:0 clamp(16px,3vw,40px)}
+.lbl{text-transform:uppercase;letter-spacing:.1em;font-size:13px;color:var(--mute)}
+#pre{position:fixed;inset:0;background:#65031E;color:#F8F7D0;z-index:50;display:flex;align-items:flex-end;justify-content:flex-end;padding:24px;font:600 clamp(80px,22vw,300px)/.8 var(--f);transition:transform .8s cubic-bezier(.7,0,.2,1)}
+#pre.done{transform:translateY(-100%)}
+header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:calc(18px + env(safe-area-inset-top,0px)) clamp(16px,3vw,40px) 18px;mix-blend-mode:difference;color:#F8F7D0;text-transform:uppercase;letter-spacing:.08em;font-size:15px}
+.logo{font-weight:700;font-size:20px;letter-spacing:.12em}
+.mbtn{all:unset;cursor:pointer;font-weight:500}
+.mbtn:focus-visible{outline:3px solid #CDE3E8}
+#menu{position:fixed;inset:0;background:#6B0B0C;color:#F8F7D0;z-index:30;padding:calc(24px + env(safe-area-inset-top,0px)) clamp(16px,3vw,40px) 24px;display:flex;flex-direction:column;justify-content:space-between;transform:translateY(-100%);transition:transform .6s cubic-bezier(.7,0,.2,1);visibility:hidden}
+#menu.open{transform:none;visibility:visible}
+#menu .x{align-self:flex-end;text-transform:uppercase;letter-spacing:.08em}
+#menu nav a{display:block;font:600 clamp(40px,8.5vw,110px)/1 var(--f);letter-spacing:-.05em}
+#menu nav a:hover{font-style:italic;color:#CDE3E8}
+.hbg{background:#65031E;color:#F8F7D0}.hbg .tg{color:#CDE3E8}.hbg .meta{border-color:#F8F7D0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wm{display:block;background:url(assets/logo-wordmark.png) no-repeat left center/contain;aspect-ratio:900/200}
+.logo.wm{width:clamp(120px,14vw,170px)}
+.hero h1.full{width:min(100%,1050px);aspect-ratio:900/248;background:url(assets/logo-full.png) no-repeat left bottom/contain;margin:0 0 clamp(16px,2vw,28px);font-size:0;letter-spacing:0}
+footer b.wm{width:clamp(200px,28vw,340px);font-size:0}
+.hbg{position:relative;overflow:hidden}
+.hero{position:relative;padding-top:110px;justify-content:space-between;gap:40px}
+.hero>*{position:relative;z-index:1}
+.hero>.orb{position:absolute;z-index:0;right:-10vw;top:14vh;width:min(52vw,640px);aspect-ratio:1;border-radius:50%;border:1.5px solid rgba(248,247,208,.28)}
+.orb:before{content:"";position:absolute;inset:14%;border-radius:50%;border:1.5px solid rgba(248,247,208,.18)}
+.orb i{position:absolute;left:8%;top:18%;width:11%;aspect-ratio:1;border-radius:50%;background:#CDE3E8}
+.mid{margin-top:auto}
+.row2{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-top:12px}
+.ask .lbl{color:#CDE3E8;display:block;margin-bottom:6px}
+.rot{font:600 clamp(26px,4vw,60px)/1.05 var(--f);letter-spacing:-.045em;min-height:1.1em;border-bottom:2px solid #F8F7D0;padding-bottom:6px}
+.rot span{display:inline-block;transition:opacity .35s,transform .35s}
+.rot span.out{opacity:0;transform:translateY(.3em)}
+.cta2{display:inline-flex;align-items:center;gap:14px;background:#F8F7D0;color:#65031E;border-radius:99px;padding:18px 30px;font:600 clamp(18px,2vw,26px) var(--f);letter-spacing:-.03em;transition:background .2s,transform .2s}
+.cta2 b{font-weight:600;transition:transform .2s}
+.cta2:hover{background:#CDE3E8;color:#2D120D}.cta2:hover b{transform:translateX(5px)}
+.hbgimg{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(20,2,8,0) 38%,rgba(20,2,8,.5) 100%),linear-gradient(rgba(101,3,30,.08),rgba(101,3,30,.08)),url(assets/hero.jpg) center 60%/cover no-repeat;z-index:0}
+.hero{padding-right:calc(42% + 28px)}
+.hero h1.full{width:100%}
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:32px}
+.hero h1{font:600 clamp(56px,17.5vw,300px)/.82 var(--f);letter-spacing:-.07em;margin:0 0 .12em -.04em}
+.hero .tg{font:600 clamp(26px,4.4vw,64px)/1 var(--f);letter-spacing:-.045em;margin:0;color:var(--acc)}
+.meta{display:flex;justify-content:space-between;gap:24px;margin-top:36px;border-top:1px solid var(--line);padding-top:16px;flex-wrap:wrap}
+.meta span{text-transform:uppercase;letter-spacing:.1em;font-size:13px}
+section{padding:96px 0}
+.dark{background:#6B0B0C;color:#F8F7D0}
+.dark .lbl{color:#CDE3E8}
+.blue{background:#CDE3E8;color:#2D120D}.blue .lbl{color:#6B0B0C}
+.coffee{background:#2D120D;color:#F8F7D0}.coffee .lbl{color:#CDE3E8}
+.kR{background:#6B0B0C;color:#F8F7D0}.kB{background:#CDE3E8;color:#2D120D}.kL{background:#F8F7D0;color:#2D120D}.kC{background:#2D120D;color:#F8F7D0}
+h2{font:600 clamp(36px,6.2vw,104px)/.98 var(--f);letter-spacing:-.05em;margin:12px 0 48px;max-width:1300px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,80px)}
+.two p{margin:0 0 18px;font-size:clamp(18px,1.6vw,24px);max-width:560px}
+.cases div{border-top:1px solid currentColor;padding:14px 0;font:600 clamp(24px,3vw,44px)/1.05 var(--f);letter-spacing:-.04em}
+.end{font:600 clamp(32px,5vw,80px)/1 var(--f);letter-spacing:-.05em;margin-top:56px}
+.flow{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-top:40px;font:600 clamp(22px,3.4vw,52px)/1 var(--f);letter-spacing:-.04em}
+.flow i{font-style:normal;color:var(--acc)}
+.s{border-top:1px solid var(--line)}
+.s:last-child{border-bottom:1px solid var(--line)}
+.s button{all:unset;cursor:pointer;width:100%;box-sizing:border-box;display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:20px 0;font:600 clamp(32px,6.4vw,104px)/1 var(--f);letter-spacing:-.055em}
+.s button:focus-visible{outline:3px solid var(--acc)}
+.s button em{font:500 13px var(--f);letter-spacing:.1em;text-transform:uppercase;font-style:normal;color:var(--acc);white-space:nowrap}
+.s button:hover span{font-style:italic;color:var(--acc)}
+.pn{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s}
+.s.on .pn{grid-template-rows:1fr}
+.pn>div{overflow:hidden}
+.pn p{max-width:560px;margin:0 0 14px auto;font-size:22px;font-weight:500}
+.pn ul{list-style:none;margin:0 0 28px auto;padding:0;max-width:560px;display:flex;flex-wrap:wrap;gap:8px}
+.pn li{border:1.5px solid var(--line);border-radius:99px;padding:5px 14px;font-size:15px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.st{border-radius:8px;padding:20px;min-height:300px;display:flex;flex-direction:column;justify-content:space-between}
+.st b{font:600 clamp(28px,3vw,44px)/1 var(--f);letter-spacing:-.04em;display:block;margin-top:8px}
+.st p{margin:0;font-size:17px}
+.k1{background:#6B0B0C;color:#F8F7D0}.k2{background:#CDE3E8;color:#2D120D}.k3{background:#2D120D;color:#F8F7D0;outline:1px solid var(--line);outline-offset:-1px}.k4{background:#CDE3E8;color:#2D120D}
+.punch{margin-top:56px;font:600 clamp(24px,3.2vw,48px)/1.05 var(--f);letter-spacing:-.04em;max-width:900px}
+.who{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.w{border-radius:8px;padding:clamp(20px,3vw,36px);min-height:260px;display:flex;flex-direction:column;justify-content:space-between}
+.w b{font:600 clamp(28px,3.6vw,56px)/1 var(--f);letter-spacing:-.045em;display:block}
+.w p{margin:8px 0 0;font-size:20px;font-weight:500}
+.w small{font-size:14px;letter-spacing:.04em;text-transform:uppercase}
+.close h2{font-size:clamp(44px,10.5vw,190px);line-height:.88;letter-spacing:-.065em;margin-bottom:40px}
+.q{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 40px;padding:0;list-style:none}
+.q li{border:1.5px solid #F8F7D0;border-radius:99px;padding:8px 20px;font-size:clamp(16px,1.6vw,22px)}
+.close .big{font:600 clamp(24px,3.4vw,52px)/1.05 var(--f);letter-spacing:-.04em;margin:0 0 48px;max-width:800px}
+.mail{display:inline-block;background:#F8F7D0;color:#6B0B0C;border-radius:99px;padding:18px 34px;font:600 clamp(20px,2.4vw,32px) var(--f);letter-spacing:-.03em}
+.mail:hover{background:#CDE3E8;color:#2D120D}
+footer{background:#2D120D;color:#F8F7D0;padding:56px 0 32px}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-end}
+footer b{font:700 clamp(36px,6vw,80px)/1 var(--f);letter-spacing:-.05em;display:block}
+footer span{color:#CDE3E8}
+@media(max-width:820px){.two,.who{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}.pn p,.pn ul{margin-left:0}.s button em{display:none}}
+@media(max-width:480px){.steps{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+@media(max-width:820px){
+.heroimg{position:relative;width:auto;height:62svh;margin:0 calc(-1*clamp(16px,3vw,40px));background-position:center 58%}
+.hero{padding-right:0;min-height:auto;padding-top:28px;padding-bottom:28px}
+}
+header{mix-blend-mode:normal;color:#2D120D;gap:16px}
+.logo.wm{width:clamp(150px,15vw,190px);aspect-ratio:900/200;background-color:#65031E;background-origin:content-box;background-position:center;padding:11px 20px;border-radius:99px;box-shadow:0 4px 0 #2D120D}
+.pills{display:flex;gap:10px;margin-left:auto}
+.pills a,header .mbtn{background:#F8F7D0;color:#2D120D;border-radius:99px;padding:12px 22px;font:500 16px var(--b);letter-spacing:.04em;text-transform:uppercase;box-shadow:0 4px 0 #2D120D;white-space:nowrap;transition:transform .15s,box-shadow .15s}
+.pills a:hover,header .mbtn:hover{transform:translateY(2px);box-shadow:0 2px 0 #2D120D}
+.pills a.ct{background:#CDE3E8}
+header .mbtn{display:none}
+.hbg2{position:relative;min-height:100svh;overflow:hidden;background:#65031E;color:#F8F7D0;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px clamp(16px,3vw,40px) 72px}
+.hc{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}
+.hc h1{font:700 clamp(40px,9.6vw,176px)/.88 var(--f);letter-spacing:-.055em;text-transform:uppercase;margin:0;text-shadow:0 2px 6px rgba(30,4,10,.35),0 4px 50px rgba(30,4,10,.55)}
+.hl{display:block;position:relative}
+.hl small{position:absolute;left:100%;top:.3em;margin-left:.45em;font:500 clamp(14px,1.9vw,34px)/1 var(--f);letter-spacing:-.03em;white-space:nowrap;text-transform:uppercase}
+.hs{font:500 clamp(20px,3vw,46px)/1.05 var(--f);letter-spacing:-.04em;max-width:1000px;margin:clamp(28px,4vw,56px) 0 clamp(28px,3.4vw,44px);text-shadow:0 1px 4px rgba(30,4,10,.4),0 2px 28px rgba(30,4,10,.6)}
+.pill2{display:inline-block;background:#F8F7D0;color:#2D120D;border-radius:99px;padding:18px 40px;font:500 clamp(17px,1.5vw,22px) var(--b);letter-spacing:.03em;text-transform:uppercase;box-shadow:0 5px 0 #2D120D;transition:transform .15s,box-shadow .15s}
+.pill2:hover{transform:translateY(3px);box-shadow:0 2px 0 #2D120D;background:#CDE3E8}
+@media(max-width:820px){.pills{display:none}header .mbtn{display:inline-block;margin-left:auto}.hl small{position:static;display:block;margin:10px 0 0;font-size:16px}.hc h1{font-size:clamp(40px,13vw,90px)}}
+header{position:absolute;color:#F8F7D0}
+.logo.wm{background-color:transparent;box-shadow:none;padding:0;width:clamp(130px,11vw,170px)}
+.pills{gap:6px}
+.pills a,header .mbtn{padding:11px 24px;font:400 clamp(15px,1.25vw,19px) var(--b);letter-spacing:.02em;box-shadow:4px 5px 0 #140706}
+.pills a:hover,header .mbtn:hover{transform:translate(2px,2px);box-shadow:2px 3px 0 #140706}
+.pills a.ct{margin-left:26px}
+.hc h1{font:600 clamp(54px,12vw,230px)/.84 var(--f);letter-spacing:-.055em}
+.hl small{top:.38em;font:400 clamp(14px,2vw,36px)/1 var(--f);letter-spacing:-.02em}
+.hs{font:500 clamp(20px,3.1vw,50px)/1.02 var(--f);max-width:72vw;margin:clamp(24px,3.4vw,56px) 0 clamp(24px,3vw,40px)}
+.pill2{padding:18px 44px;font:400 clamp(16px,1.4vw,20px) var(--b);box-shadow:4px 5px 0 #140706}
+.pill2:hover{transform:translate(2px,2px);box-shadow:2px 3px 0 #140706}
+@media(max-width:820px){.hs{max-width:92vw}.hc h1{font-size:clamp(52px,19vw,120px)}}
+.pills{display:none!important}
+header .mbtn{display:inline-block;margin-left:auto;background:rgba(248,247,208,.08);color:#F8F7D0;border:1px solid rgba(248,247,208,.7);box-shadow:none;padding:10px 28px;font:500 13px var(--b);letter-spacing:.16em;text-transform:uppercase;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .25s,color .25s}
+header .mbtn:hover{background:#F8F7D0;color:#2D120D;transform:none;box-shadow:none}
+header{padding-top:calc(26px + env(safe-area-inset-top,0px))}
+.logo.wm{width:clamp(110px,9vw,140px)}
+.hc h1{font:500 clamp(34px,6.4vw,118px)/.94 var(--f);letter-spacing:-.05em}
+.hl small{top:.28em;margin-left:.6em;font:400 clamp(11px,1.15vw,19px)/1 var(--b);letter-spacing:.14em}
+.hs{font:400 clamp(15px,1.5vw,23px)/1.4 var(--b);letter-spacing:0;max-width:34em;margin:clamp(22px,2.6vw,38px) 0 clamp(26px,2.6vw,36px);opacity:.92}
+.pill2{padding:15px 38px;font:500 13px var(--b);letter-spacing:.16em;box-shadow:none;transition:background .25s,color .25s}
+.pill2:hover{transform:none;box-shadow:none;background:#CDE3E8}
+@media(max-width:820px){.hc h1{font-size:clamp(34px,10.5vw,64px)}.hs{max-width:30em;font-size:16px}.hl small{display:block;margin:12px 0 0;letter-spacing:.14em}}
+</style></head>
+<body>
+<div id="pre" aria-hidden="true"><span id="pct">0</span>%</div>
+<header><a class="logo wm" href="#top" aria-label="PROBLEMA home"></a><nav class="pills" aria-label="Main"><a href="#solve">Services</a><a href="#method">Method</a><a href="#who">Who we work with</a><a class="ct" href="#contact">Contact</a></nav><button class="mbtn" id="mo" aria-expanded="false" aria-controls="menu">Menu</button></header>
+<div id="menu" aria-label="Menu">
+  <button class="mbtn x" id="mc">Close</button>
+  <nav><a href="#why">Why Problema</a><a href="#what">What we do</a><a href="#solve">What we solve</a><a href="#method">Method</a><a href="#who">Who we work with</a><a href="#contact">Contact</a></nav>
+  <div class="lbl" style="color:#CDE3E8">Dubai, UAE</div>
+</div>
+
+<main id="top">
+<div class="hbg2" id="hero">
+  <div class="hbgimg" role="img" aria-label="Burgundy velvet chair with a phone off the hook, on a light blue backdrop"></div>
+  <div class="hc">
+    <h1><span class="sr">PROBLEMA. Every business has one.</span>
+      <span class="hl" aria-hidden="true">Every business</span>
+      <span class="hl" aria-hidden="true">has one.<small>(Marketing agency)</small></span></h1>
+    <p class="hs">Strategic marketing &amp; brand intervention agency in Dubai, UAE.</p>
+    <a class="pill2" href="#contact">Find your problem</a>
+  </div>
+</div>
+
+<section class="coffee" id="why"><div class="wrap">
+  <div class="lbl">Why Problema?</div>
+  <h2>“Problema” is the word for “problem” in many languages.</h2>
+  <div class="two">
+    <div>
+      <p>But a problem is not always a crisis.</p>
+      <p>It can be a challenge, a weak spot, a missed opportunity, or simply the gap between where your business is and where it wants to be.</p>
+    </div>
+    <div class="cases">
+      <div>A startup ready to launch.</div><div>A company that has stopped growing.</div><div>A business entering a new market.</div><div>A brand losing relevance.</div><div>A reputation under pressure.</div>
+    </div>
+  </div>
+  <p class="end">Different businesses. Different problems.<br>We find yours, then we solve it.</p>
+</div></section>
+
+<section class="blue" id="what"><div class="wrap">
+  <div class="lbl">What we do</div>
+  <h2>We don't start with services. We start with your problem.</h2>
+  <div class="two">
+    <p>PROBLEMA works with startups, growing companies and established businesses to uncover what is holding them back, then builds the strategy to move them forward.</p>
+    <p>We bring business thinking, marketing, brand, communication and creative execution together to solve real commercial challenges.</p>
+  </div>
+  <div class="flow"><span>Diagnose</span><i>→</i><span>Define</span><i>→</i><span>Solve</span><i>→</i><span>Grow</span></div>
+</div></section>
+
+<section id="solve"><div class="wrap">
+  <div class="lbl" style="margin-bottom:16px">What we solve</div>
+  <div class="s on"><button aria-expanded="true"><span>Brand &amp; Positioning</span><em>Open</em></button><div class="pn"><div>
+    <p>When your business needs a sharper, clearer direction.</p><ul><li>Brand strategy</li><li>Positioning</li><li>Value proposition</li><li>Customer definition</li><li>Messaging</li><li>Repositioning</li></ul></div></div></div>
+  <div class="s"><button aria-expanded="false"><span>Go-to-Market &amp; Launch</span><em>Open</em></button><div class="pn"><div>
+    <p>When you're launching a business or product, or entering a new market.</p><ul><li>Market research</li><li>GTM strategy</li><li>Market entry</li><li>Launch strategy</li><li>Customer acquisition</li></ul></div></div></div>
+  <div class="s"><button aria-expanded="false"><span>Marketing &amp; Growth</span><em>Open</em></button><div class="pn"><div>
+    <p>When you need more customers and stronger results.</p><ul><li>Marketing strategy</li><li>Digital &amp; performance marketing</li><li>Campaigns</li><li>Conversion</li><li>CRM</li><li>Retention</li></ul></div></div></div>
+  <div class="s"><button aria-expanded="false"><span>Business &amp; Marketing Turnaround</span><em>Open</em></button><div class="pn"><div>
+    <p>When something isn't working and you need to know why.</p><ul><li>Business &amp; marketing audits</li><li>Performance analysis</li><li>Customer journey</li><li>Marketing restructuring</li><li>Recovery plans</li></ul></div></div></div>
+  <div class="s"><button aria-expanded="false"><span>Reputation &amp; Crisis</span><em>Open</em></button><div class="pn"><div>
+    <p>When your reputation or business is under pressure.</p><ul><li>Crisis communication</li><li>Reputation management</li><li>PR</li><li>Public response</li><li>Crisis recovery</li><li>Preparedness</li></ul></div></div></div>
+  <div class="s"><button aria-expanded="false"><span>Communication &amp; Visibility</span><em>Open</em></button><div class="pn"><div>
+    <p>When your business is strong but the market isn't noticing.</p><ul><li>PR</li><li>Communication strategy</li><li>Content</li><li>Thought leadership</li><li>Founder positioning</li><li>Partnerships</li></ul></div></div></div>
+</div></section>
+
+<section class="coffee" id="method"><div class="wrap">
+  <div class="lbl">The Problema Method</div>
+  <h2>Every solution starts with a diagnosis.</h2>
+  <div class="steps">
+    <div class="st kR"><span class="lbl" style="color:#CDE3E8">01</span><div><b>Diagnose</b><p>Get to know your business, market, customers and the challenge in front of you.</p></div></div>
+    <div class="st kB"><span class="lbl" style="color:#6B0B0C">02</span><div><b>Define</b><p>Pinpoint the real problem and the biggest opportunities.</p></div></div>
+    <div class="st kL"><span class="lbl" style="color:#6B0B0C">03</span><div><b>Solve</b><p>Build the right strategy and execute it.</p></div></div>
+    <div class="st kR"><span class="lbl" style="color:#CDE3E8">04</span><div><b>Grow</b><p>Measure, optimize and turn the solution into lasting growth.</p></div></div>
+  </div>
+  <p class="punch">No unnecessary services. No one-size-fits-all packages. Only the right solution for the right problem.</p>
+</div></section>
+
+<section class="blue" id="who"><div class="wrap">
+  <div class="lbl" style="margin-bottom:16px">Who we work with</div>
+  <div class="who">
+    <div class="w kR"><div><b>Startups</b><p>From idea to market.</p></div><small>Positioning · GTM · Launch · Customer acquisition</small></div>
+    <div class="w kL"><div><b>Growing businesses</b><p>From traction to scale.</p></div><small>Growth · Marketing · Conversion · Expansion</small></div>
+    <div class="w kC"><div><b>Established businesses</b><p>From stagnation to renewed relevance.</p></div><small>Repositioning · Transformation · Relaunch</small></div>
+    <div class="w kR"><div><b>Businesses in crisis</b><p>From reaction to recovery.</p></div><small>Crisis strategy · Communication · Reputation recovery</small></div>
+  </div>
+  <p class="punch">Industry-agnostic. Problem-focused.</p>
+</div></section>
+
+<section class="dark close" id="contact"><div class="wrap">
+  <h2>What's your Problema?</h2>
+  <ul class="q"><li>Launching something new?</li><li>Growth stalled?</li><li>Marketing not delivering?</li><li>Entering a new market?</li><li>Losing relevance?</li><li>Facing a reputation challenge?</li></ul>
+  <p class="big">Whatever the problem, that's where we start.</p>
+  <a class="mail" href="mailto:hello@problema.ae?subject=My%20Problema">hello@problema.ae</a>
+</div></section>
+</main>
+
+<footer><div class="wrap"><div><b class="wm" role="img" aria-label="PROBLEMA"></b><span>Every business has one.</span></div><span>Dubai, UAE</span></div></footer>
+
+<script>
+(function(){
+var p=document.getElementById('pct'),n=0,t=setInterval(function(){n+=Math.ceil(Math.random()*9);if(n>=100){n=100;clearInterval(t);setTimeout(function(){document.getElementById('pre').classList.add('done')},250)}p.textContent=n},60);
+var m=document.getElementById('menu'),o=document.getElementById('mo');
+function tog(v){m.classList.toggle('open',v);o.setAttribute('aria-expanded',v)}
+o.onclick=function(){tog(true)};document.getElementById('mc').onclick=function(){tog(false)};
+m.querySelectorAll('nav a').forEach(function(a){a.onclick=function(){tog(false)}});
+document.querySelectorAll('.s').forEach(function(s){s.querySelector('button').onclick=function(){
+var was=s.classList.contains('on');
+document.querySelectorAll('.s').forEach(function(x){x.classList.remove('on');x.querySelector('button').setAttribute('aria-expanded','false')});
+if(!was){s.classList.add('on');this.setAttribute('aria-expanded','true')}}});
+})();
+</script>
+</body></html>
