@@ -203,6 +203,15 @@ header .mbtn.burger:hover{opacity:1}
  .vh-scroll{left:auto;right:24px;bottom:24px;transform:none}.vh-scroll i{height:44px}
  .vh-cta{left:24px;bottom:24px}.cta-ring{width:48px;height:48px}.vh-cta:after{left:64px}.vh-br{right:24px;bottom:28px}
 }
+/* ===== Sticky header: appears once the hero is scrolled past ===== */
+header{position:fixed;padding:calc(36px + env(safe-area-inset-top,0px)) 40px 0;transition:padding .6s cubic-bezier(.7,0,.2,1)}
+header:before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(80,8,20,.84);-webkit-backdrop-filter:blur(14px) saturate(1.15);backdrop-filter:blur(14px) saturate(1.15);border-bottom:1px solid rgba(248,247,208,.09);transform:translateY(-101%);transition:transform .6s cubic-bezier(.7,0,.2,1)}
+header.stuck{padding:calc(14px + env(safe-area-inset-top,0px)) 40px 14px}
+header.stuck:before{transform:none}
+header .logo.wm{display:block;width:clamp(108px,8.5vw,128px);aspect-ratio:900/200;padding:0;border-radius:0;box-shadow:none;background:#F8F7D0;-webkit-mask:url(assets/logo-wordmark.png) left center/contain no-repeat;mask:url(assets/logo-wordmark.png) left center/contain no-repeat;opacity:0;transform:translateY(-10px);pointer-events:none;transition:opacity .5s .15s,transform .6s cubic-bezier(.2,.8,.2,1) .15s}
+header.stuck .logo.wm{opacity:1;transform:none;pointer-events:auto}
+@media(max-width:820px){header{padding:calc(28px + env(safe-area-inset-top,0px)) 24px 0}header.stuck{padding:calc(10px + env(safe-area-inset-top,0px)) 24px 10px}}
+@media (prefers-reduced-motion:reduce){header,header:before,header .logo.wm{transition:none}}
 </style></head>
 <body>
 <div id="pre" aria-hidden="true"><span id="pct">0</span>%</div>
@@ -458,5 +467,11 @@ document.addEventListener('visibilitychange',sync);
 (function(){var c=document.querySelector('.vh-cta');if(!c||matchMedia('(hover: none),(prefers-reduced-motion: reduce)').matches)return;
 c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();var x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);c.style.transform='translate('+x*.18+'px,'+y*.3+'px)'});
 c.addEventListener('pointerleave',function(){c.style.transform=''});})();
+</script>
+<script>
+/* Sticky header: logo + burger bar once the hero has scrolled away */
+(function(){var h=document.querySelector('header'),hero=document.getElementById('hero');if(!h||!hero)return;
+var on=false;function check(){var v=window.scrollY>hero.offsetHeight-90;if(v!==on){on=v;h.classList.toggle('stuck',v)}}
+addEventListener('scroll',check,{passive:true});addEventListener('resize',check);check();})();
 </script>
 </body></html>
