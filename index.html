@@ -146,14 +146,16 @@ header{padding-top:calc(26px + env(safe-area-inset-top,0px))}
 .pill2:hover{transform:none;box-shadow:none;background:#CDE3E8}
 @media(max-width:820px){.hc h1{font-size:clamp(34px,10.5vw,64px)}.hs{max-width:30em;font-size:16px}.hl small{display:block;margin:12px 0 0;letter-spacing:.14em}}
 
-/* ===== Hero: relief rises out of the velvet where the cursor rests ===== */
+/* ===== Hero: liquid reveal (LN Hero Experience port) on velvet ===== */
+.vh-lines{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;pointer-events:none;opacity:0;transition:opacity 1.4s}
+.vh.ready .vh-lines{opacity:1}
 header .logo{display:none}
 header{padding:calc(36px + env(safe-area-inset-top,0px)) 40px 0;z-index:20}
 header .mbtn,header .mbtn:hover{background:none;border:0;padding:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;color:#F8F7D0;font:400 14px/1 var(--b);letter-spacing:0;text-transform:none;transform:none}
 header .mbtn:hover{opacity:.6}
 .vh{position:relative;height:100svh;min-height:520px;overflow:hidden;background:#4a0d12;color:#F8F7D0;isolation:isolate}
 .vh-gl,.vh-fallback{position:absolute;inset:0;width:100%;height:100%;display:block}
-.vh-fallback{background:url(assets/velvet-land.jpg) center/cover;opacity:0;transition:opacity 1s}
+.vh-fallback{background:url(assets/velvet-hd.jpg) center/cover;opacity:0;transition:opacity 1s}
 .vh.nogl .vh-fallback{opacity:1}
 .vh-gl{opacity:0;transition:opacity 1.4s ease}
 .vh.ready .vh-gl{opacity:1}
@@ -284,129 +286,159 @@ if(!was){s.classList.add('on');this.setAttribute('aria-expanded','true')}}});
 })();
 </script>
 <script>
-/* Hero: the velvet sits flat; wherever the cursor rests, the embossed flowers swell
-   up out of the fabric as a lit 3D relief, and sink back after it leaves. */
+/* Hero liquid reveal — ported from the LN Hero Experience plugin (approved-flow.js 4.4.22–24
+   + hover-webgl.js). Same metaball wake, same autonomous path, same pointer wake and timings.
+   The flat fills of the original are replaced by the velvet: the liquid shape reveals the
+   floral relief lifted and lit, with a slightly deeper core; contour rings bend near the cursor. */
 (function(){
-var hero=document.getElementById('hero'),cv=hero.querySelector('.vh-gl');
-var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+'use strict';
+var hero=document.getElementById('hero');if(!hero)return;
+var cv=hero.querySelector('.vh-gl');
+var motion=matchMedia('(prefers-reduced-motion: reduce)');
 var pre=document.getElementById('pre');
 (function wait(){if(!pre||pre.classList.contains('done'))setTimeout(function(){hero.classList.add('in')},300);else setTimeout(wait,80)})();
-var gl=cv.getContext('webgl',{antialias:false,alpha:false});
+
+var groups=[[-110,-20,395,280],[665,-90,405,330],[560,650,495,335]];
+var VS='attribute vec2 p;varying vec2 uv;void main(){uv=p*.5+.5;gl_Position=vec4(p,0.,1.);}';
+var FS=[
+'precision highp float;',
+'varying vec2 uv;uniform sampler2D T;uniform vec2 R,I,D;uniform float time,energy,intro;uniform vec4 wake[8];',
+'float contribution(vec2 pos,vec2 point,float index,float size,float strength){',
+'  float u=index/8.;float radius=96.*size*(1.-u*.46);',
+'  vec2 delta=(pos-point)/vec2(radius*1.16,radius);',
+'  return exp(-dot(delta,delta)*1.48)*(strength*pow(1.-u*.72,1.22));}',
+'vec2 cover(vec2 u){float sr=R.x/R.y,ir=I.x/I.y;vec2 s=sr>ir?vec2(1.,ir/sr):vec2(sr/ir,1.);return (u-.5)*s+.5;}',
+'float lum(vec2 t){return dot(texture2D(T,t).rgb,vec3(.299,.587,.114));}',
+'void main(){',
+'  vec2 p=vec2(uv.x,1.-uv.y)*D;',
+'  vec2 warped=vec2(',
+'    p.x+22.*sin(p.y*.026+time*.45)+12.*sin(p.x*.019-p.y*.018-time*.56),',
+'    p.y+24.*sin(p.x*.023-time*.43)+12.*cos(p.y*.022+p.x*.011+time*.3));',
+'  float field=0.;',
+'  for(int i=0;i<8;i++){',
+'    field+=contribution(warped,wake[i].xy,float(i),.98,.34);',
+'    field+=contribution(warped,wake[i].zw,float(i),1.42,.39);}',
+'  float innerField=field+.045*sin(p.x*.014-p.y*.011+time*.45);',
+'  float outerAA=.002,innerAA=.003;',
+'  #ifdef LN_DERIVATIVES',
+'    outerAA=max(fwidth(field)*.6,.0001);innerAA=max(fwidth(innerField)*.6,.0001);',
+'  #endif',
+'  float edge=smoothstep(.2175-outerAA,.2175+outerAA,field);',
+'  float inner=smoothstep(.72-innerAA,.72+innerAA,innerField);',
+'  vec2 tu=cover(uv);',
+'  vec3 base=texture2D(T,tu).rgb*.86;',
+   // liquid refraction: the revealed velvet is shifted by the same warp that shapes the wake
+'  vec2 off=(warped-p)/D*vec2(.28,-.28);',
+'  vec2 tr=cover(uv+off*edge);',
+'  vec3 rev=texture2D(T,tr).rgb;',
+'  vec2 px=1.8/I;',
+'  float em=(lum(tr-px)-lum(tr+px))+(lum(tr+vec2(-px.x,px.y))-lum(tr+vec2(px.x,-px.y)));',
+'  vec3 body=rev*1.42+vec3(1.,.62,.56)*clamp(em,-.2,.4)*1.25;',
+'  vec3 core=body*.84;',
+'  vec3 fill=mix(body,core,inner);',
+'  vec3 c=mix(base,fill,clamp(edge*energy,0.,1.));',
+'  float vg=smoothstep(1.35,.35,length((uv-.5)*vec2(R.x/R.y,1.)*.8));c*=mix(.78,1.,vg);',
+'  gl_FragColor=vec4(c*intro,1.);}'
+].join('\n');
+
+var gl=cv.getContext('webgl',{alpha:false,antialias:false,powerPreference:'high-performance'});
 if(!gl){hero.classList.add('nogl');return}
+function compile(t,s){var o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS)){console.warn(gl.getShaderInfoLog(o));return null}return o}
+var der=gl.getExtension('OES_standard_derivatives');
+var vs=compile(gl.VERTEX_SHADER,VS),fs=compile(gl.FRAGMENT_SHADER,(der?'#extension GL_OES_standard_derivatives : enable\n#define LN_DERIVATIVES\n':'')+FS);
+if(!vs||!fs){hero.classList.add('nogl');return}
+var prog=gl.createProgram();gl.attachShader(prog,vs);gl.attachShader(prog,fs);gl.linkProgram(prog);
+if(!gl.getProgramParameter(prog,gl.LINK_STATUS)){hero.classList.add('nogl');return}
+gl.useProgram(prog);
+var buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+var at=gl.getAttribLocation(prog,'p');gl.enableVertexAttribArray(at);gl.vertexAttribPointer(at,2,gl.FLOAT,false,0,0);
+var U={};['T','R','I','D','time','energy','intro','wake[0]'].forEach(function(n){U[n]=gl.getUniformLocation(prog,n)});
 
-var NOISE='float hs(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}'+
-'float vn(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hs(i),hs(i+vec2(1,0)),f.x),mix(hs(i+vec2(0,1)),hs(i+1.),f.x),f.y);}'+
-'float fb(vec2 p){return vn(p)*.55+vn(p*2.1)*.3+vn(p*4.3)*.15;}';
-var VS='attribute vec2 p;varying vec2 v;void main(){v=p*.5+.5;gl_Position=vec4(p,0.,1.);}';
-
-// 1) mask: painted by the cursor, fades out slowly
-var FS_MASK='precision highp float;varying vec2 v;uniform sampler2D P;uniform vec2 A,B;uniform float rad,amt,asp,t,decay;'+NOISE+
-'void main(){float m=texture2D(P,v).r;m=max(m-decay,0.);'+
-'vec2 k=vec2(asp,1.);vec2 pa=(v-A)*k,ba=(B-A)*k;float h=clamp(dot(pa,ba)/max(dot(ba,ba),1e-6),0.,1.);'+
-'float d=length(pa-ba*h);float r=rad*(.75+.5*fb(v*k*4.+t*.15));'+
-'m=min(1.,m+smoothstep(r,r*.2,d)*amt);gl_FragColor=vec4(m,m,m,1.);}';
-
-// 2) render
-var FS='precision highp float;varying vec2 v;'+
-'uniform sampler2D C,F,H,K;uniform vec2 R,I,KP;uniform vec3 AV;uniform float t,intro;'+NOISE+
-'vec2 cover(vec2 u){float sr=R.x/R.y,ir=I.x/I.y;vec2 s=sr>ir?vec2(1.,ir/sr):vec2(sr/ir,1.);return (u-.5)*s+.5;}'+
-'float msk(vec2 u){float m=texture2D(K,u).r;float n=fb(u*vec2(R.x/R.y,1.)*7.+t*.04);return smoothstep(.12,.9,m+(n-.5)*.45*m*(1.-m)*4.);}'+
-'float ht(vec2 tu,float m){vec4 h=texture2D(H,tu);return ((h.r-h.g)*1.7+(h.g-h.b)*3.2)*m;}'+
-'void main(){'+
-' float m=msk(v);'+
-' vec2 g=vec2(msk(v+vec2(KP.x,0.))-msk(v-vec2(KP.x,0.)),msk(v+vec2(0.,KP.y))-msk(v-vec2(0.,KP.y)));'+
-' vec2 tu=cover(v-g*.006);'+                          // fabric pulled toward the swelling
-' vec2 e=vec2(2.5/I.x,0.),f=vec2(0.,2.5/I.y);'+
-' float s=ht(tu,1.);float hx=ht(tu+e,1.)-ht(tu-e,1.),hy=ht(tu+f,1.)-ht(tu-f,1.);'+
-' float lift=m*(1.+.9*m);'+
-' vec3 n=normalize(vec3(-hx*lift*5.5-g.x*3.,-hy*lift*5.5-g.y*3.,1.));'+
-' vec3 n0=normalize(vec3(-hx*.22,-hy*.22,1.));'+           // flat: faint embossing only
-' n=normalize(mix(n0,n,smoothstep(0.,.35,m)));'+
-' vec3 L=normalize(vec3(-.5,.62,.62));'+
-' float dif=dot(n,L);'+
-' vec2 ld=normalize(L.xy)*vec2(1.5/I.x,1.5/I.y);'+
-' float occ=0.;for(int i=1;i<=6;i++){float fi=float(i);occ=max(occ,(ht(tu+ld*fi*2.,1.)-s)*lift*.9/fi*3.);}'+
-' vec3 det=texture2D(C,tu).rgb,flt=texture2D(F,tu).rgb;'+
-' vec3 col=mix(mix(mix(flt,AV,.45),det,.12),det,smoothstep(.0,.6,m));'+
-' float sh=.62+.55*dif;'+
-' vec3 c=col*sh*(1.-clamp(occ,0.,.45));'+
-' vec3 Hh=normalize(L+vec3(0.,0.,1.));c+=vec3(1.,.72,.66)*pow(max(dot(n,Hh),0.),28.)*.12*m;'+
-' c+=vec3(.5,.1,.12)*pow(1.-n.z,1.4)*.55*m;'+               // velvet sheen on raised edges
-' float sw=msk(v+vec2(.006,-.009));c*=1.-.38*max(sw-m,0.);'+
-' float a=m*(1.-m)*4.;c*=1.-.18*a*smoothstep(0.,1.,length(g)*25.);'+
-' c+=(hs(v*R+fract(t)*91.)-.5)*.03;'+
-' float vg=smoothstep(1.3,.3,length((v-.5)*vec2(R.x/R.y,1.)*.85));c*=mix(.72,1.,vg);'+
-' gl_FragColor=vec4(c*intro,1.);}';
-
-function sh(tp,src){var s=gl.createShader(tp);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){console.warn(gl.getShaderInfoLog(s));return null}return s}
-function prog(fs){var a=sh(gl.VERTEX_SHADER,VS),b=sh(gl.FRAGMENT_SHADER,fs);if(!a||!b)return null;var p=gl.createProgram();gl.attachShader(p,a);gl.attachShader(p,b);gl.linkProgram(p);return gl.getProgramParameter(p,gl.LINK_STATUS)?p:null}
-var PM=prog(FS_MASK),PR=prog(FS);
-if(!PM||!PR){hero.classList.add('nogl');return}
-var buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
-function use(p){gl.useProgram(p);var l=gl.getAttribLocation(p,'p');gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,2,gl.FLOAT,false,0,0)}
-function U(p,n){return gl.getUniformLocation(p,n)}
-function tex(src,w,h){var t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);
- gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
- gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
- if(src){gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,src)}
- else gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);return t}
-
-// blur by down/up-scaling (works in every browser)
-function blurred(img,f){var w=img.width,h=img.height,c=document.createElement('canvas'),x=c.getContext('2d');
- var sw=Math.max(2,Math.round(w/f)),sh2=Math.max(2,Math.round(h/f));c.width=sw;c.height=sh2;x.imageSmoothingQuality='high';x.drawImage(img,0,0,sw,sh2);
- var o=document.createElement('canvas');o.width=w;o.height=h;var y=o.getContext('2d');y.imageSmoothingQuality='high';y.drawImage(c,0,0,w,h);return o}
-function lum(cnv){var x=cnv.getContext('2d'),d=x.getImageData(0,0,cnv.width,cnv.height).data,o=new Float32Array(d.length/4);for(var i=0;i<o.length;i++)o[i]=(d[i*4]*.299+d[i*4+1]*.587+d[i*4+2]*.114)/255;return o}
-function heightMap(img){var w=img.width,h=img.height,a=document.createElement('canvas');a.width=w;a.height=h;a.getContext('2d').drawImage(img,0,0);
- var L0=lum(blurred(img,4)),L1=lum(blurred(img,14)),L2=lum(blurred(img,48));
- var lo=1,hi=0;for(var i=0;i<L0.length;i++){lo=Math.min(lo,L0[i]);hi=Math.max(hi,L0[i])}var sc=1/Math.max(hi-lo,.05);
- var out=document.createElement('canvas');out.width=w;out.height=h;var ox=out.getContext('2d'),id=ox.createImageData(w,h);
- for(i=0;i<L0.length;i++){id.data[i*4]=Math.min(255,(L0[i]-lo)*sc*255);id.data[i*4+1]=Math.min(255,(L1[i]-lo)*sc*255);id.data[i*4+2]=Math.min(255,(L2[i]-lo)*sc*255);id.data[i*4+3]=255}
- ox.putImageData(id,0,0);return out}
-
-var av=[.27,.08,.09],W,Hh,KW,KH,fbo=[],kt=[],ping=0,uC,uF,uH,iw=1,ih=1,cur;
-function makeMask(){KW=Math.max(64,Math.round(W/3));KH=Math.max(64,Math.round(Hh/3));fbo=[];kt=[];
- for(var i=0;i<2;i++){kt[i]=tex(null,KW,KH);fbo[i]=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,fbo[i]);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,kt[i],0);gl.clearColor(0,0,0,1);gl.clear(gl.COLOR_BUFFER_BIT)}
- gl.bindFramebuffer(gl.FRAMEBUFFER,null)}
-function load(src){var img=new Image();img.onload=function(){
- uC=tex(img);uF=tex(blurred(img,22));var ac=document.createElement('canvas');ac.width=ac.height=1;var ax=ac.getContext('2d');ax.drawImage(img,0,0,1,1);var ad=ax.getImageData(0,0,1,1).data;av=[ad[0]/255,ad[1]/255,ad[2]/255];uH=tex(heightMap(img));iw=img.width;ih=img.height;
- if(!hero.classList.contains('ready')){hero.classList.add('ready');start()}};
- img.onerror=function(){hero.classList.add('nogl')};img.src=src}
-function size(){var dpr=Math.min(devicePixelRatio||1,1.5);W=cv.width=Math.round(cv.clientWidth*dpr);Hh=cv.height=Math.round(cv.clientHeight*dpr);makeMask();
- var want=cv.clientWidth>=cv.clientHeight?'assets/velvet-land.jpg':'assets/velvet.jpg';if(want!==cur){cur=want;load(want)}}
-size();var rt;addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(size,150)});
-
-// pointer + idle wander
-var p={x:.5,y:.5},q={x:.5,y:.5},prev={x:.5,y:.5},lastMove=-1e9,dwell=0,intro=0,t0=performance.now(),lt=t0,run=true,raf,hasPtr=false;
-function mv(cx,cy){var r=cv.getBoundingClientRect();p.x=(cx-r.left)/r.width;p.y=1-(cy-r.top)/r.height;lastMove=performance.now();hasPtr=true}
-hero.addEventListener('pointermove',function(e){mv(e.clientX,e.clientY)});
-hero.addEventListener('touchmove',function(e){var o=e.touches[0];mv(o.clientX,o.clientY)},{passive:true});
-var spots=[[.36,.72],[.7,.36],[.58,.62],[.24,.34],[.8,.7],[.45,.28]],si=0,spotT=0;
-
-function frame(now){
- var dt=Math.min(.05,(now-lt)/1000);lt=now;var t=(now-t0)/1000;
- var idle=now-lastMove>3000;
- if(idle){spotT+=dt;if(spotT>5.5){spotT=0;si=(si+1)%spots.length}var s=spots[si];p.x+=(s[0]-p.x)*.02;p.y+=(s[1]-p.y)*.02}
- prev.x=q.x;prev.y=q.y;q.x+=(p.x-q.x)*.25;q.y+=(p.y-q.y)*.25;
- var sp=Math.hypot(q.x-prev.x,q.y-prev.y)/Math.max(dt,.001);
- dwell=sp<.08?Math.min(dwell+dt,4):Math.max(0,dwell-dt*2.5);
- var grow=1-Math.pow(1-Math.min(dwell/3.2,1),2);
- var rad=.07+.2*grow;
- // mask pass
- use(PM);gl.bindFramebuffer(gl.FRAMEBUFFER,fbo[1-ping]);gl.viewport(0,0,KW,KH);
- gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,kt[ping]);gl.uniform1i(U(PM,'P'),0);
- gl.uniform2f(U(PM,'A'),prev.x,prev.y);gl.uniform2f(U(PM,'B'),q.x,q.y);gl.uniform1f(U(PM,'rad'),rad);
- gl.uniform1f(U(PM,'amt'),(reduce?.03:.075)*(.55+.45*grow));gl.uniform1f(U(PM,'decay'),.0045);gl.uniform1f(U(PM,'asp'),W/Hh);gl.uniform1f(U(PM,'t'),t);
- gl.drawArrays(gl.TRIANGLE_STRIP,0,4);ping=1-ping;
- // render pass
- use(PR);gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,W,Hh);
- [[uC,'C'],[uF,'F'],[uH,'H'],[kt[ping],'K']].forEach(function(a,i){gl.activeTexture(gl.TEXTURE0+i);gl.bindTexture(gl.TEXTURE_2D,a[0]);gl.uniform1i(U(PR,a[1]),i)});
- gl.uniform2f(U(PR,'R'),W,Hh);gl.uniform2f(U(PR,'I'),iw,ih);gl.uniform3f(U(PR,'AV'),av[0],av[1],av[2]);gl.uniform2f(U(PR,'KP'),1.5/KW,1.5/KH);
- intro=Math.min(1,intro+dt/1.6);gl.uniform1f(U(PR,'t'),t);gl.uniform1f(U(PR,'intro'),1-Math.pow(1-intro,3));
- gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
- if(run)raf=requestAnimationFrame(frame);
+// contour rings (2D canvas over the WebGL layer, as in the plugin)
+var lines=document.createElement('canvas');lines.className='vh-lines';lines.setAttribute('aria-hidden','true');cv.after(lines);
+var ctx=lines.getContext('2d');
+var width=0,height=0,ready=false,port=false,DW=960,DH=540;
+function resize(){
+  width=hero.clientWidth;height=hero.clientHeight;
+  var wr=Math.min(devicePixelRatio||1,1.5),lr=Math.min(devicePixelRatio||1,1.35);
+  cv.width=Math.max(1,Math.round(width*wr));cv.height=Math.max(1,Math.round(height*wr));
+  lines.width=Math.max(1,Math.round(width*lr));lines.height=Math.max(1,Math.round(height*lr));
+  ctx.setTransform(lr,0,0,lr,0,0);gl.viewport(0,0,cv.width,cv.height);gl.uniform2f(U.R,cv.width,cv.height);
+  port=height>width;DW=port?540:960;DH=port?960:540;gl.uniform2f(U.D,DW,DH);
 }
-function start(){cancelAnimationFrame(raf);run=true;lt=performance.now();raf=requestAnimationFrame(frame)}
-new IntersectionObserver(function(en){if(en[0].isIntersecting){if(!run&&hero.classList.contains('ready'))start()}else run=false}).observe(hero);
+var img=new Image();
+img.onload=function(){
+  var t=gl.createTexture();gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,t);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,img);gl.uniform1i(U.T,0);gl.uniform2f(U.I,img.width,img.height);
+  ready=true;hero.classList.add('ready');sync();
+};
+img.onerror=function(){hero.classList.add('nogl')};
+img.src='assets/velvet-hd.jpg';
+
+var frame=0,last=0,time=0,energy=0,intro=0,inView=true,active=false;
+var x=480,y=270,hoverX=480,hoverY=270;
+// two independent wakes: the first is always automatic, the second follows the pointer
+var autoWake=new Float32Array(16),hoverWake=new Float32Array(16),wake=new Float32Array(32);
+for(var i=0;i<8;i++){autoWake[i*2]=480;autoWake[i*2+1]=270;hoverWake[i*2]=-1200;hoverWake[i*2+1]=-1200}
+function sampleChain(chain,px,py,dt,headLag){
+  chain[0]+=(px-chain[0])*(1-Math.exp(-dt/headLag));chain[1]+=(py-chain[1])*(1-Math.exp(-dt/headLag));
+  for(var i=1;i<8;i++){var lag=active?(28+i*4.5):(48+i*7),a=1-Math.exp(-dt/lag);
+    chain[i*2]+=(chain[(i-1)*2]-chain[i*2])*a;chain[i*2+1]+=(chain[(i-1)*2+1]-chain[i*2+1])*a}
+}
+function packWake(){wake.set(autoWake,0);wake.set(hoverWake,16)}
+hero.addEventListener('pointermove',function(e){
+  if(e.pointerType!=='mouse')return;
+  var r=hero.getBoundingClientRect();hoverX=(e.clientX-r.left)/r.width*DW;hoverY=(e.clientY-r.top)/r.height*DH;
+  if(!active){for(var i=0;i<8;i++){hoverWake[i*2]=hoverX;hoverWake[i*2+1]=hoverY}}
+  active=true;
+},{passive:true});
+hero.addEventListener('pointerleave',function(){active=false},{passive:true});
+packWake();
+
+function drawLines(){
+  ctx.clearRect(0,0,width,height);ctx.lineWidth=.8;ctx.strokeStyle='rgba(248,247,208,.11)';
+  groups.forEach(function(g,j){var cx=port?g[1]:g[0],cy=port?g[0]:g[1],rx=port?g[3]:g[2],ry=port?g[2]:g[3];
+    for(var ring=0;ring<3;ring++){var radius=.61+ring*.31;ctx.beginPath();
+      for(var step=0;step<=240;step++){var a=step/240*Math.PI*2;
+        var w=1+.11*Math.sin(a*3+time*.52+j)+.055*Math.cos(a*5-time*.56);
+        var px=cx+rx*radius*w*Math.cos(a),py=cy+ry*radius*w*Math.sin(a);
+        var dist=Math.hypot(px-x,py-y),pull=Math.exp(-Math.pow(dist/145,2))*energy;
+        px+=pull*14*Math.sin(py*.012-time*2.35);py+=pull*14*Math.cos(px*.013+time*2.10);
+        if(step===0)ctx.moveTo(px*width/DW,py*height/DH);else ctx.lineTo(px*width/DW,py*height/DH)}
+      ctx.closePath();ctx.stroke()}});
+}
+function paint(){
+  if(!ready)return;
+  gl.uniform1f(U.time,time);gl.uniform1f(U.energy,energy);gl.uniform1f(U.intro,1-Math.pow(1-intro,3));
+  gl.uniform4fv(U['wake[0]'],wake);gl.drawArrays(gl.TRIANGLES,0,6);drawLines();
+}
+function tick(now){
+  frame=0;if(document.hidden||!inView||motion.matches){last=0;return}
+  var dt=last?Math.min(50,now-last):16.667;last=now;time+=dt/1000;intro=Math.min(1,intro+dt/1400);
+  var ax=480+325*Math.sin(time*.90)+48*Math.sin(time*1.60);
+  var ay=270+150*Math.sin(time*1.10)+28*Math.cos(time*1.85);
+  var autoX=port?ay:ax,autoY=port?ax:ay;   // portrait: same path, axes swapped
+  var tx=active?hoverX:autoX,ty=active?hoverY:autoY;
+  var follow=1-Math.exp(-dt/(active?46:82));x+=(tx-x)*follow;y+=(ty-y)*follow;
+  sampleChain(autoWake,autoX,autoY,dt,36);
+  if(active)sampleChain(hoverWake,hoverX,hoverY,dt,18);else sampleChain(hoverWake,-1200,-1200,dt,70);
+  packWake();
+  var desired=active?1.08:.72;
+  energy+=(desired-energy)*(1-Math.exp(-dt/(desired>energy?82:420)));
+  paint();frame=requestAnimationFrame(tick);
+}
+function sync(){
+  if(frame)cancelAnimationFrame(frame);frame=0;last=0;
+  if(document.hidden||!inView)return;
+  if(motion.matches){energy=.72;intro=1}
+  paint();if(!motion.matches)frame=requestAnimationFrame(tick);
+}
+resize();
+new ResizeObserver(function(){resize();paint()}).observe(hero);
+new IntersectionObserver(function(en){inView=en[0].isIntersecting;sync()}).observe(hero);
+document.addEventListener('visibilitychange',sync);
 })();
 </script>
 </body></html>
